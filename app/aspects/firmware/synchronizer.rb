@@ -14,7 +14,7 @@ module Terminus
         end
 
         def call
-          result = trmnl_api.firmware
+          result = trmnl_api.latest_firmware
 
           case result
             in Success(payload) then download(payload).bind { attach it, payload.version }

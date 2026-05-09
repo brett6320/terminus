@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 require "hanami_helper"
+require "http"
 
 RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
   subject(:fetcher) { described_class.new http: }
+
+  let(:http) { class_double HTTP }
+
+  before { allow(http).to receive_messages(headers: http, follow: http) }
 
   describe "#call" do
     let :input do
@@ -14,22 +19,18 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with JSON" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/json"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "application/json"},
+                                      body: [
+                                        {
+                                          title: "Castle in the Sky",
+                                          director: "Hayao Miyazaki"
+                                        }
+                                      ].to_json,
+                                      status: 200,
+                                      version: 1.0
 
-            <<~BODY
-              [
-                {
-                  "title": "Castle in the Sky",
-                  "director": "Hayao Miyazaki"
-                }
-              ]
-            BODY
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
@@ -46,30 +47,26 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with JSON-LD" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/ld+json"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "application/ld+json"},
+                                      body: {
+                                        "@context" => "https://json-ld.org/contexts/person.jsonld",
+                                        "@id" => "http://dbpedia.org/resource/John_Lennon",
+                                        name: "John Lennon",
+                                        born: "1940-10-09",
+                                        spouse: [
+                                          "http://dbpedia.org/resource/Yoko_Ono",
+                                          "http://dbpedia.org/resource/Cynthia_Lennon"
+                                        ]
+                                      }.to_json,
+                                      status: 200,
+                                      version: 1.0
 
-            <<~BODY
-              {
-                "@context": "https://json-ld.org/contexts/person.jsonld",
-                "@id": "http://dbpedia.org/resource/John_Lennon",
-                "name": "John Lennon",
-                "born": "1940-10-09",
-                "spouse": [
-                  "http://dbpedia.org/resource/Yoko_Ono",
-                  "http://dbpedia.org/resource/Cynthia_Lennon"
-                ]
-              }
-            BODY
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "application/ld+json"})
+        result = fetcher.call input.with(headers: {content_type: "application/ld+json"})
 
         expect(result).to be_success(
           data: {
@@ -88,31 +85,27 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with GeoJSON" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/geo+json"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "application/geo+json"},
+                                      body: {
+                                        "@context" => [
+                                          "https://geojson.org/geojson-ld/geojson-context.jsonld",
+                                          {
+                                            "@version": "1.1"
+                                          }
+                                        ],
+                                        type: "Feature",
+                                        geometry: {},
+                                        properties: {}
+                                      }.to_json,
+                                      status: 200,
+                                      version: 1.0
 
-            <<~BODY
-              {
-                "@context": [
-                  "https://geojson.org/geojson-ld/geojson-context.jsonld",
-                  {
-                    "@version": "1.1"
-                  }
-                ],
-                "type": "Feature",
-                "geometry": {},
-                "properties": {}
-              }
-            BODY
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "application/geo+json"})
+        result = fetcher.call input.with(headers: {content_type: "application/geo+json"})
 
         expect(result).to be_success(
           data: {
@@ -132,27 +125,23 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with arbitrary JSON schema" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/fake!#&-^$but_valid+json"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "application/fake!_#&-^$valid+json"},
+                                      body: [
+                                        {
+                                          title: "Castle in the Sky",
+                                          director: "Hayao Miyazaki"
+                                        }
+                                      ].to_json,
+                                      status: 200,
+                                      version: 1.0
 
-            <<~BODY
-              [
-                {
-                  "title": "Castle in the Sky",
-                  "director": "Hayao Miyazaki"
-                }
-              ]
-            BODY
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
         result = fetcher.call input.with(
-          headers: {"Content-Type" => "application/fake!#&-^$but_valid+json"}
+          headers: {content_type: "application/fake!#&-^$but_valid+json"}
         )
 
         expect(result).to be_success(
@@ -168,26 +157,22 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with invalid JSON MIME type" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/+json"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "application/+json"},
+                                      body: [
+                                        {
+                                          title: "Castle in the Sky",
+                                          director: "Hayao Miyazaki"
+                                        }
+                                      ].to_json,
+                                      status: 200,
+                                      version: 1.0
 
-            <<~BODY
-              [
-                {
-                  title: "Castle in the Sky",
-                  director: "Hayao Miyazaki"
-                }
-              ]
-            BODY
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers failure" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "application/+json"})
+        result = fetcher.call input.with(headers: {content_type: "application/+json"})
 
         expect(result).to match(
           Failure(
@@ -204,40 +189,38 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with image" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "image/png"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "image/png"},
+                                      body: {}.to_json,
+                                      status: 200,
+                                      version: 1.0
 
-            "<binary>"
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "image/png"})
-        expect(result).to be_success(data: "<binary>", error: {})
+        result = fetcher.call input.with(headers: {content_type: "image/png"})
+        expect(result).to be_success(data: "{}", error: {})
       end
     end
 
     context "with CSV" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "text/csv"
-            status 200
+      before do
+        body = <<~CONTENT
+          title,director
+          Castle in the Sky,Hayao Miyazaki
+        CONTENT
 
-            <<~BODY
-              title,director
-              Castle in the Sky,Hayao Miyazaki
-            BODY
-          end
-        end
+        response = HTTP::Response.new headers: {content_type: "text/csv"},
+                                      body:,
+                                      status: 200,
+                                      version: 1.0
+
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "text/csv"})
+        result = fetcher.call input.with(headers: {content_type: "text/csv"})
 
         expect(result).to be_success(
           data: [
@@ -252,127 +235,123 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with text" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "text/plain"
-            status 200
+      before do
+        body = <<~CONTENT
+          one
+          two
+          three
+        CONTENT
 
-            <<~BODY
-              one
-              two
-              three
-            BODY
-          end
-        end
+        response = HTTP::Response.new headers: {content_type: "text/plain"},
+                                      body:,
+                                      status: 200,
+                                      version: 1.0
+
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "text/plain"})
+        result = fetcher.call input.with(headers: {content_type: "text/plain"})
         expect(result).to be_success(data: %w[one two three], error: {})
       end
     end
 
     context "with XML (text)" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "text/xml"
-            status 200
+      before do
+        body = <<~CONTENT
+          <?xml version="1.0" encoding="UTF-8"?>
+          <catalog>Empty</catalog>
+        CONTENT
 
-            <<~BODY
-              <?xml version="1.0" encoding="UTF-8"?>
-              <catalog>Empty</catalog>
-            BODY
-          end
-        end
+        response = HTTP::Response.new headers: {content_type: "text/xml"},
+                                      body:,
+                                      status: 200,
+                                      version: 1.0
+
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "text/xml"})
+        result = fetcher.call input.with(headers: {content_type: "text/xml"})
         expect(result).to be_success(data: {"catalog" => "Empty"}, error: {})
       end
     end
 
     context "with XML (application)" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/xml"
-            status 200
+      before do
+        body = <<~CONTENT
+          <?xml version="1.0" encoding="UTF-8"?>
+          <catalog>Empty</catalog>
+        CONTENT
 
-            <<~BODY
-              <?xml version="1.0" encoding="UTF-8"?>
-              <catalog>Empty</catalog>
-            BODY
-          end
-        end
+        response = HTTP::Response.new headers: {content_type: "application/xml"},
+                                      body:,
+                                      status: 200,
+                                      version: 1.0
+
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "application/xml"})
+        result = fetcher.call input.with(headers: {content_type: "application/xml"})
         expect(result).to be_success(data: {"catalog" => "Empty"}, error: {})
       end
     end
 
     context "with XML (RSS)" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/rss+xml"
-            status 200
+      before do
+        body = <<~CONTENT
+          <?xml version="1.0" encoding="UTF-8"?>
+          <catalog>Empty</catalog>
+        CONTENT
 
-            <<~BODY
-              <?xml version="1.0" encoding="UTF-8"?>
-              <catalog>Empty</catalog>
-            BODY
-          end
-        end
+        response = HTTP::Response.new headers: {content_type: "application/rss+xml"},
+                                      body:,
+                                      status: 200,
+                                      version: 1.0
+
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "application/rss+xml"})
+        result = fetcher.call input.with(headers: {content_type: "application/rss+xml"})
         expect(result).to be_success(data: {"catalog" => "Empty"}, error: {})
       end
     end
 
     context "with XML (Atom)" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/atom+xml"
-            status 200
+      before do
+        body = <<~CONTENT
+          <?xml version="1.0" encoding="UTF-8"?>
+          <catalog>Empty</catalog>
+        CONTENT
 
-            <<~BODY
-              <?xml version="1.0" encoding="UTF-8"?>
-              <catalog>Empty</catalog>
-            BODY
-          end
-        end
+        response = HTTP::Response.new headers: {content_type: "application/atom+xml"},
+                                      body:,
+                                      status: 200,
+                                      version: 1.0
+
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers success" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "application/atom+xml"})
+        result = fetcher.call input.with(headers: {content_type: "application/atom+xml"})
         expect(result).to be_success(data: {"catalog" => "Empty"}, error: {})
       end
     end
 
     context "with unknown MIME type" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "text/html"
-            status 200
+      before do
+        response = HTTP::Response.new headers: {content_type: "text/html"},
+                                      body: "<p>A test.</p>",
+                                      status: 200,
+                                      version: 1.0
 
-            <<~HTML
-              <p>A test.</p>
-            HTML
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers failure" do
-        result = fetcher.call input.with(headers: {"Content-Type" => "text/html"})
+        result = fetcher.call input.with(headers: {content_type: "text/html"})
         expect(result).to match(
           Failure(
             data: {},
@@ -388,17 +367,13 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
     end
 
     context "with bad HTTP status" do
-      let :http do
-        HTTP::Fake::Client.new do
-          get "/films" do
-            headers["Content-Type"] = "application/json"
-            status 404
+      before do
+        response = HTTP::Response.new headers: {content_type: "application/json"},
+                                      body: {error: "Danger!"}.to_json,
+                                      status: 404,
+                                      version: 1.0
 
-            <<~BODY.strip
-              {"error": "Danger!"}
-            BODY
-          end
-        end
+        allow(http).to receive(:get).and_return response
       end
 
       it "answers failure" do
@@ -409,7 +384,7 @@ RSpec.describe Terminus::Aspects::Extensions::Fetchers::Sole do
               uri: "https://ghibliapi.vercel.app/films",
               code: 404,
               type: "application/json",
-              body: {"error" => "Danger!"}.to_json(space: " ")
+              body: {error: "Danger!"}.to_json
             }
           )
         )

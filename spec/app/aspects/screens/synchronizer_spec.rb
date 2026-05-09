@@ -16,7 +16,6 @@ RSpec.describe Terminus::Aspects::Screens::Synchronizer, :db do
     Success(
       HTTP::Response.new(
         uri: display.image_url,
-        verb: :get,
         body: SPEC_ROOT.join("support/fixtures/test.bmp").read,
         status: 200,
         version: 1.0

@@ -9,7 +9,7 @@ RSpec.describe Terminus::Aspects::Downloader do
   include_context "with application dependencies"
 
   let(:http) { class_double HTTP, get: response }
-  let(:response) { HTTP::Response.new uri:, verb: :get, body: "Test.", status: 200, version: 1.0 }
+  let(:response) { HTTP::Response.new uri:, body: "Test.", status: 200, version: 1.0 }
   let(:uri) { "https://test.io/test.txt" }
 
   describe "#call" do
@@ -26,7 +26,7 @@ RSpec.describe Terminus::Aspects::Downloader do
       let(:http) { class_double HTTP, get: response }
 
       let :response do
-        HTTP::Response.new uri:, verb: :get, body: "Danger!", status: 404, version: 1.0
+        HTTP::Response.new uri:, body: "Danger!", status: 404, version: 1.0
       end
 
       it "answers failure" do

@@ -8,8 +8,8 @@ RSpec.describe Terminus::Aspects::Firmware::Synchronizer, :db do
 
   let :trmnl_api do
     instance_double TRMNL::API::Client,
-                    firmware: Success(
-                      TRMNL::API::Models::Firmware[
+                    latest_firmware: Success(
+                      TRMNL::API::Models::LatestFirmware[
                         url: "https://trmnl-fw.s3.us-east-2.amazonaws.com/FW1.2.3.bin",
                         version: "1.2.3"
                       ]
@@ -22,7 +22,6 @@ RSpec.describe Terminus::Aspects::Firmware::Synchronizer, :db do
     Success(
       HTTP::Response.new(
         uri: "https://trmnl-fw.s3.us-east-2.amazonaws.com/FW1.2.3.bin",
-        verb: :get,
         body: [123].pack("N"),
         status: 200,
         version: 1.0
@@ -69,7 +68,9 @@ RSpec.describe Terminus::Aspects::Firmware::Synchronizer, :db do
     end
 
     context "with API client failure" do
-      let(:trmnl_api) { instance_double TRMNL::API::Client, firmware: Failure(message: "Danger!") }
+      let :trmnl_api do
+        instance_double TRMNL::API::Client, latest_firmware: Failure(message: "Danger!")
+      end
 
       it "answers failure" do
         expect(synchronizer.call).to be_failure(message: "Danger!")

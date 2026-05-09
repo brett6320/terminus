@@ -32,7 +32,6 @@ Bundler.require :tools
 
 require "bcrypt"
 require "dry/monads"
-require "http/fake"
 require "inspectable/rspec/matchers/match_inspection"
 require "refinements"
 require "warning"

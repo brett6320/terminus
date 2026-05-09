@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami_helper"
+require "http"
 require "trmnl/api"
 
 RSpec.describe Terminus::Aspects::Fonts::Synchronizer do
@@ -16,7 +17,6 @@ RSpec.describe Terminus::Aspects::Fonts::Synchronizer do
     Success(
       HTTP::Response.new(
         uri: "https://trmnl-oss.s3-us-east-2.amazonaws.com/fonts/test.ttf",
-        verb: :get,
         body: [123].pack("N"),
         status: 200,
         version: 1.0
