@@ -42,7 +42,7 @@ module Terminus
         end
 
         def log_debug record
-          logger.debug(tags: record.to_h) { "Screen mold built." }
+          logger.debug(tags: [record.to_h]) { "Screen mold built." }
           record
         end
       end
