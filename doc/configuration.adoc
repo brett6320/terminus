@@ -2,6 +2,8 @@
 :toclevels: 5
 :figure-caption!:
 
+:http_link: link:https://github.com/httprb/http[HTTP]
+
 = Configuration
 
 The following explains how to customize this application further if desired.
@@ -25,6 +27,9 @@ There are several environment variables you can use to customize behavior by upd
 * `FIRMWARE_SYNCHRONIZER`: Enables/disables firmware synchronization. See {jobs_link} for details. Defaults to enabled.
 * `FONTS_PATH`: The path to where {trmnl_framework_link} fonts are stored since the Framework stylesheets require a relative path to all fonts to load properly. This is necessary when rendering screens for {extensions_link}. Default: `public/fonts`.
 * `HANAMI_PORT`: The default port when running the app locally or via {docker_doc_link}. When using Docker, this is used for the internal and external port mapping.
+* `HTTP_TIMEOUT_CONNECT`: The time, in seconds, before HTTP times out when establishing a connection. Default: `2`.
+* `HTTP_TIMEOUT_READ`: The time, in seconds, before HTTP times out when reading from a connection. Default: `10`.
+* `HTTP_TIMEOUT_WRITE`: The time, in seconds, before HTTP times out when writing to a connection. Default: `10`.
 * `KEYVALUE_DATABASE`: Defines your database ID. Used by {docker_doc_link} only. Default: `0`.
 * `KEYVALUE_PASSWORD`: Defines your password. Used by {docker_doc_link} only. Default: (auto-generated for you during setup).
 * `KEYVALUE_PORT`: Defines your port. Used by {docker_doc_link} only. Default: `6379`.
@@ -35,3 +40,5 @@ There are several environment variables you can use to customize behavior by upd
 * `SCREEN_SYNCHRONIZER`: Enables/disables device proxied screen synchronization. See {jobs_link} for details. Defaults to enabled.
 * `SESSION_INACTIVITY_LIMIT`: The amount of time, in seconds, since last activity the browser session remains active before needing to login again. This is checked _before_ `SESSION_LIFETIME_LIMIT`. Default: 1,800 seconds (30 minutes).
 * `SESSION_LIFETIME_LIMIT`: The amount of time, in seconds, the browser session remains active -- regardless of activity -- before needing to login again. This is checked _after_ `SESSION_INACTIVITY_LIMIT`. Default: 86,400 seconds (1 day).
+
+💡 The {http_link} gem is used for all HTTP requests via synchronization jobs, extensions, etc. Use the `+HTTP_*+` environment variables to customize link:https://github.com/httprb/http/wiki/Timeouts[timeout] behavior as desired.

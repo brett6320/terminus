@@ -21,6 +21,11 @@ module Terminus
             constructor: Types::Params::String,
             default: `git tag --list --sort=taggerdate | tail -n 1`.strip
     setting :firmware_synchronizer, constructor: Types::Params::Bool, default: true
+    setting :http_timeout_connect,
+            constructor: Types::Params::Integer.constrained(gt: 0),
+            default: 2
+    setting :http_timeout_read, constructor: Types::Params::Integer.constrained(gt: 0), default: 10
+    setting :http_timeout_write, constructor: Types::Params::Integer.constrained(gt: 0), default: 10
     setting :keyvalue_url, constructor: Types::Params::String.constrained(filled: true)
     setting :model_synchronizer, constructor: Types::Params::Bool, default: true
     setting :sensors_path,
