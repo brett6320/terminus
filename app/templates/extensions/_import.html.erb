@@ -1,0 +1,21 @@
+<%= scope(:popover_default_content, name: :import, label: "Extension Import").render do %>
+  <%= form_for :extension,
+               routes.path(:extension_import),
+               enctype: "multipart/form-data",
+               accept: "application/octet-stream",
+               class: "bit-form",
+               **HTMX[
+                 post: routes.path(:extension_import),
+                 trigger: :change,
+                 target: ".site-body",
+                 select: ".site-body"
+               ] do |form| %>
+
+    <p>Please attach a zip file (extension) to import into your collection.</p>
+
+    <%= form.file_field :attachment,
+                        id: :extension_attachment,
+                        value: nil,
+                        class: :value %>
+  <% end %>
+<% end %>

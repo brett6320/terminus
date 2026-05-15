@@ -10,9 +10,16 @@
     <div class="bit-actions">
       <%= render "shared/actions/search", path: routes.path(:extensions), query: %>
       <%= link_to "Gallery", routes.path(:extensions_gallery), class: "bit-button-accept" %>
+      <%= render "shared/popovers/triggers/default",
+                 name: :import,
+                 icon: :upload,
+                 width: 25,
+                 height: 25 %>
       <%= render "shared/actions/new", path: routes.path(:extension_new) %>
     </div>
   </header>
+
+  <%= render :import %>
 
   <%= scope(:popover_default_content, name: :overview, label: "Overview").render do %>
     <p>Extensions allow you to extend existing functionality with custom behavior. These are an enhanced version of what you get when using <a href="https://trmnl.com/integrations">Core Plugins</a>.</p>
