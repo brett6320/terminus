@@ -572,7 +572,7 @@ GEM
     xdg (10.2.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.5)
+    zeitwerk (2.8.0)
 
 PLATFORMS
   aarch64-linux
@@ -865,7 +865,7 @@ CHECKSUMS
   wholeable (2.2.0) sha256=3771cd074fe482c379e8a2564b01e0877d7c62461926c3b614ceff4707689ba0
   xdg (10.2.0) sha256=fe756543e29548fb05a5b0395ffd49f54ae07182a906598ef9694d68c56af028
   xpath (3.2.0) sha256=6dfda79d91bb3b949b947ecc5919f042ef2f399b904013eb3ef6d20dd3a4082e
-  zeitwerk (2.7.5) sha256=d8da92128c09ea6ec62c949011b00ed4a20242b255293dd66bf41545398f73dd
+  zeitwerk (2.8.0) sha256=474d0a1d2429f635af7c4574f5ddbce0d0cfc286067c7515858b93a26b4f3e3d
 
 RUBY VERSION
   ruby 4.0.4
