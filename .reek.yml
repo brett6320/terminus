@@ -14,7 +14,7 @@ detectors:
     exclude:
       - Terminus::Actions::API::Base
       - Terminus::Aspects::Croner
-      - Terminus::Aspects::ProblemDetail
+      - Terminus::Aspects::Errors::Problem
       - Terminus::Aspects::Screens::Shoter
       - Terminus::Repositories::Screen
   DuplicateMethodCall:

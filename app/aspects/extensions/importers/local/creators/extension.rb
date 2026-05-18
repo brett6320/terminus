@@ -15,9 +15,9 @@ module Terminus
               include Initable[error_joiner: proc { Terminus::Aspects::Errors::ResultJoiner }]
               include Dry::Monads[:result]
 
-              def initialize(schema: Schemas::Extension, problem_detail: Aspects::ProblemDetail, **)
+              def initialize(schema: Schemas::Extension, problem: Aspects::Errors::Problem, **)
                 @schema = schema
-                @problem_detail = problem_detail
+                @problem = problem
                 super(**)
               end
 
@@ -27,12 +27,12 @@ module Terminus
                       .alt_map { error_joiner.call "Extension", it }
                       .fmap { create it.to_h }
               rescue ROM::SQL::UniqueConstraintError => error
-                Failure problem_detail.duplicate(error.message, nil).detail
+                Failure problem.duplicate(error.message, nil).detail
               end
 
               private
 
-              attr_reader :schema, :problem_detail
+              attr_reader :schema, :problem
 
               def create(attributes) = repository.create(attributes).tap { log it }
 

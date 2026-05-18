@@ -15,7 +15,7 @@ module Terminus
             response.body = if firmware
                               {data: serializer.new(firmware).to_h}.to_json
                             else
-                              problem[status: :not_found].to_json
+                              petail[status: :not_found].to_json
                             end
           end
         end

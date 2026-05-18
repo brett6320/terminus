@@ -21,20 +21,20 @@ module Terminus
 
             include Dry::Monads[:result]
 
-            def initialize(problem_detail: Aspects::ProblemDetail, **)
+            def initialize(problem: Aspects::Errors::Problem, **)
               super(**)
-              @problem_detail = problem_detail
+              @problem = problem
             end
 
             def call id
               transform id
             rescue ROM::SQL::UniqueConstraintError => error
-              Failure problem_detail.duplicate(error.message, nil).detail
+              Failure problem.duplicate(error.message, nil).detail
             end
 
             private
 
-            attr_reader :problem_detail
+            attr_reader :problem
 
             def transform id
               transformer.call(id).fmap do |attributes|

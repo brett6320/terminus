@@ -47,7 +47,7 @@ module Terminus
           end
 
           def not_found error, response
-            payload = problem[
+            payload = petail[
               type: "/problem_details#device_setup",
               status: __method__,
               detail: error,
@@ -58,7 +58,7 @@ module Terminus
           end
 
           def unprocessable_content errors, response
-            payload = problem[
+            payload = petail[
               type: "/problem_details#device_setup",
               status: __method__,
               detail: "Invalid request headers.",

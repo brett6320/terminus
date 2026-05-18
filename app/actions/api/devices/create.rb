@@ -35,7 +35,7 @@ module Terminus
           end
 
           def not_found error, response
-            payload = problem[
+            payload = petail[
               type: "/problem_details#device_payload",
               status: __method__,
               detail: error,
@@ -46,7 +46,7 @@ module Terminus
           end
 
           def unprocessable_content parameters, response
-            payload = problem[
+            payload = petail[
               type: "/problem_details#device_payload",
               status: :unprocessable_content,
               detail: "Validation failed.",

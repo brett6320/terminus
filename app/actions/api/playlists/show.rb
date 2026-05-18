@@ -15,7 +15,7 @@ module Terminus
             response.body = if playlist
                               {data: serializer.new(playlist).to_h}.to_json
                             else
-                              problem[status: :not_found].to_json
+                              petail[status: :not_found].to_json
                             end
           end
         end

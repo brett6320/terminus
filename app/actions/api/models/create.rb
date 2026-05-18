@@ -44,7 +44,7 @@ module Terminus
           private
 
           def unprocessable_content parameters, response
-            payload = problem[
+            payload = petail[
               type: "/problem_details#model_payload",
               status: :unprocessable_content,
               detail: "Validation failed.",

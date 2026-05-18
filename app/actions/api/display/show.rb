@@ -84,7 +84,7 @@ module Terminus
           end
 
           def not_found response
-            payload = problem[
+            payload = petail[
               type: "/problem_details#device_id",
               status: __method__,
               detail: "Invalid device ID.",
