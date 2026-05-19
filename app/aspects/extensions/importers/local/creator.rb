@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "core"
+require "dry/monads"
 require "initable"
 require "yaml"
 
@@ -22,6 +23,7 @@ module Terminus
                 "template.html.liquid" => :template
               }
             ]
+            include Dry::Monads[:result]
 
             def initialize(schema: Schemas::Import, error_joiner: Errors::ResultJoiner, **)
               @schema = schema
@@ -38,7 +40,7 @@ module Terminus
                       .bind { schema.call(it).to_monad }
                       .alt_map { error_joiner.call "Import", it }
                       .bind { extension_creator.call attributes }
-                      .then { create_exchanges it, attributes }
+                      .bind { create_exchanges it, attributes }
             end
             # rubocop:enable Metrics/AbcSize
 
@@ -50,9 +52,9 @@ module Terminus
               entries.transform_keys!(key_map).then { {**it, **YAML.load(it[:configuration])} }
             end
 
-            def create_exchanges result, attributes
+            def create_exchanges extension, attributes
               attributes.fetch("exchanges", Core::EMPTY_ARRAY)
-                        .reduce(result) { |accumulator, item| create_exchange accumulator, item }
+                        .reduce(Success(extension)) { |result, item| create_exchange result, item }
             end
 
             def create_exchange result, attributes
