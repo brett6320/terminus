@@ -14,7 +14,7 @@ module Terminus
               include Deps[keyer: "aspects.extensions.importers.remote.transformers.template_keys"]
               include Initable[
                 layout: <<~BODY
-                  <div class="{{extension.css_classes}}">
+                  <div class="{{ extension.css_classes }}">
                     <div class="view view--full">
                       %<content>s
                     </div>

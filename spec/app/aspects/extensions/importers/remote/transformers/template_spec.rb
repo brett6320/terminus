@@ -22,7 +22,7 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformers::T
           template: <<~CONTENT
             {% assign shared = "Test" %}
 
-            <div class="{{extension.css_classes}}">
+            <div class="{{ extension.css_classes }}">
               <div class="view view--full">
                 {{ source_1 }}
             {{ source_2 }}
@@ -55,7 +55,7 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformers::T
           template: <<~CONTENT
             {% assign shared = "Test" %}
 
-            <div class="{{extension.css_classes}}">
+            <div class="{{ extension.css_classes }}">
               <div class="view view--full">
                 {{ source_1.rss.channel.item[0] }}
             {{ source_1.data }}
@@ -82,7 +82,7 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformers::T
 
         expect(transformer.call({}, archive)).to be_success(
           template: <<~CONTENT
-            <div class="{{extension.css_classes}}">
+            <div class="{{ extension.css_classes }}">
               <div class="view view--full">
                 <p>Test</p>
               </div>

@@ -68,7 +68,7 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformer do
         template: <<~CONTENT
           {% assign shared = "Test" %}
 
-          <div class="{{extension.css_classes}}">
+          <div class="{{ extension.css_classes }}">
             <div class="view view--full">
               <h1>Test</h1>
             </div>
@@ -92,19 +92,19 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformer do
 
     it "transforms template indexes" do
       archive[:full] = <<~CONTENT.strip
-        <p>{{IDX_0}}</p>
-        <p>{{IDX_1}}</p>
-        <p>{{IDX_2}}</p>
+        {{ IDX_0 }}
+        {{ IDX_1 }}
+        {{ IDX_2 }}
       CONTENT
 
       proof[:template] = <<~CONTENT
         {% assign shared = "Test" %}
 
-        <div class="{{extension.css_classes}}">
+        <div class="{{ extension.css_classes }}">
           <div class="view view--full">
-            <p>{{source_1}}</p>
-        <p>{{source_2}}</p>
-        <p>{{source_3}}</p>
+            {{ source_1 }}
+        {{ source_2 }}
+        {{ source_3 }}
           </div>
         </div>
       CONTENT

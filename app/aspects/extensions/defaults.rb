@@ -12,7 +12,7 @@ module Terminus
         days: [],
         interval: 1,
         template: <<~BODY
-          <div class="{{extension.css_classes}}">
+          <div class="{{ extension.css_classes }}">
             <div class="view view--full">
               <div class="layout layout--col">
               </div>
