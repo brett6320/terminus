@@ -53,7 +53,7 @@ GEM
       fiber-annotation
       fiber-local (~> 1.1)
       json
-    containable (2.2.1)
+    containable (2.3.0)
       concurrent-ruby (~> 1.3)
     content_disposition (1.0.0)
     core (3.2.0)
@@ -537,9 +537,9 @@ GEM
       refinements (~> 14.0)
       zeitwerk (~> 2.7)
     transproc (1.1.1)
-    trmnl-api (0.15.0)
+    trmnl-api (0.16.0)
       cogger (~> 2.0)
-      containable (~> 2.0)
+      containable (~> 2.3)
       core (~> 3.2)
       dry-monads (~> 1.9)
       dry-schema (~> 1.14)
@@ -548,7 +548,7 @@ GEM
       infusible (~> 5.0)
       inspectable (~> 1.0)
       pipeable (~> 2.0)
-      zeitwerk (~> 2.7)
+      zeitwerk (~> 2.8)
     trmnl-liquid (0.7.0)
       liquid (~> 5.12)
       redcarpet (~> 3.6)
@@ -652,7 +652,7 @@ DEPENDENCIES
   sidekiq (~> 8.0)
   sidekiq-scheduler (~> 6.0)
   simplecov (~> 0.22)
-  trmnl-api (~> 0.15)
+  trmnl-api (~> 0.16)
   trmnl-liquid (~> 0.6)
   versionaire (~> 15.0)
   warning (~> 1.5)
@@ -668,7 +668,6 @@ CHECKSUMS
   better_errors (2.10.1) sha256=f798f1bac93f3e775925b7fcb24cffbcf0bb62ee2210f5350f161a6b75fc0a73
   bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
   binding_of_caller (1.0.1) sha256=2b2902abff4246ddcfbc4da9b69bc4a019e22aeb300c2ff6289a173d4b90b29a
-  bundler (4.0.11) sha256=5bcec0fb78302e48d02ee46f10ee6e6942be647ba5b44a6d1ddfda9a240ce785
   caliber (0.91.0) sha256=820a65713613f0c1ec639e7598b977e45988fcf8c66e1cd61fd029d70cff8c0e
   capybara (3.40.0) sha256=42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef
   capybara-validate_html5 (2.1.0) sha256=9c5bcac8058f05c8468c0856ccfbf91478e24c7ff07c79b8ac7c64ba9291cf5a
@@ -678,7 +677,7 @@ CHECKSUMS
   concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   console (1.35.1) sha256=6d2bfdd0bc7e57830540a6c0ce3bc83fff471844db44be89a38aef9f95df296a
-  containable (2.2.1) sha256=47870ea565ab5636018d429b40f62d1b3333098c29400a4057d37ab262dfce65
+  containable (2.3.0) sha256=50ea39c7db67de55b4456f634f6f398c75ae4f5b8abc0052b1512a5df842a0aa
   content_disposition (1.0.0) sha256=aa153da9c1543a45413a3f5f281d8dd50384bb0fba864fe1bd42ba80d88da516
   core (3.2.0) sha256=b3ff51dbf91d65a0b0bae57c16603ca545ea558a1b40a812272abde53abc3440
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
@@ -852,7 +851,7 @@ CHECKSUMS
   tilt (2.7.0) sha256=0d5b9ba69f6a36490c64b0eee9f6e9aad517e20dcc848800a06eb116f08c6ab3
   tone (3.2.0) sha256=ecd5edccfcf346134d80fc258395a9f5ce11cba6cb2603e5369cb51c6ea89205
   transproc (1.1.1) sha256=b2f9a85ecaf7064f0b3893ffac929de9fd713b13f5aaf822b0bd091fd6f5c8c2
-  trmnl-api (0.15.0) sha256=cf3d55415442f2d902141284f4ad9a4bebed880e37116a97c0993017263d3322
+  trmnl-api (0.16.0) sha256=194b20a4be9906cfb1104c8833d7da9c343161395a754fca9e9804da0247f861
   trmnl-liquid (0.7.0) sha256=25e399c694f58888e45eca730e595d08338c5d977358611c2655375cf9e5090a
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b

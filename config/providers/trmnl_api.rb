@@ -5,9 +5,7 @@ Hanami.app.register_provider :trmnl_api do
 
   start do
     slice.start :http
-
-    TRMNL::API::Container.register :http, slice[:http]
-    TRMNL::API::Container.register :logger, slice[:logger]
+    TRMNL::API::Container.merge slice, :http, :logger
 
     recipes = TRMNL::API.new { |settings| settings.uri = "https://trmnl.com" }
 
