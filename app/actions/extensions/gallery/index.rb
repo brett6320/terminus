@@ -14,14 +14,28 @@ module Terminus
             optional(:page).filled :integer
           end
 
+          def initialize(error_joiner: Aspects::Errors::ResultJoiner, **)
+            @error_joiner = error_joiner
+            super(**)
+          end
+
           def handle request, response
             parameters = request.params
 
-            load(parameters).either -> recipe { render request, recipe, response },
-                                    -> message { render_error parameters, message, response }
+            case load parameters
+              in Success(recipe) then render request, recipe, response
+              in Failure(String => message) then render_error parameters, message, response
+              in Failure(Dry::Schema::Result => result)
+                render_errors result, parameters, response
+              else
+                response.flash.now[:alert] = "Unable to process TRMNL API."
+                response.render view, recipe: empty_recipe, **parameters.to_h.slice(:query, :page)
+            end
           end
 
           private
+
+          attr_reader :error_joiner
 
           def load parameters
             case parameters
@@ -46,6 +60,11 @@ module Terminus
 
           def render_error parameters, message, response
             response.flash.now[:alert] = message
+            response.render view, recipe: empty_recipe, **parameters.to_h.slice(:query, :page)
+          end
+
+          def render_errors result, parameters, response
+            response.flash.now[:alert] = error_joiner.call "Gallery", result
             response.render view, recipe: empty_recipe, **parameters.to_h.slice(:query, :page)
           end
         end

@@ -102,12 +102,35 @@ RSpec.describe Terminus::Actions::Extensions::Gallery::Index do
       expect(response.body.first).to include(%(<h2 class="label">Test I</h2>))
     end
 
-    context "with failure" do
+    context "with single message failure" do
       let(:trmnl_api) { instance_double TRMNL::API::Client, recipes: Failure("Danger!") }
 
       it "flashes alert" do
         response = action.call Rack::MockRequest.env_for("", "router.params" => {query: "Test I"})
         expect(response.body.first).to match(/site-alert.+Danger!/m)
+      end
+    end
+
+    context "with validation failures" do
+      let :trmnl_api do
+        attributes.dig(:data, 0).delete :name
+
+        instance_double TRMNL::API::Client,
+                        recipes: Failure(TRMNL::API::Schemas::Recipe.call(attributes))
+      end
+
+      it "flashes alert" do
+        response = action.call Rack::MockRequest.env_for("", "router.params" => {query: "Test I"})
+        expect(response.body.first).to match(/site-alert.+Gallery data\.0\.name is missing\./m)
+      end
+    end
+
+    context "with unknown failure" do
+      let(:trmnl_api) { instance_double TRMNL::API::Client, recipes: 666 }
+
+      it "flashes alert" do
+        response = action.call Rack::MockRequest.env_for("", "router.params" => {query: "Test I"})
+        expect(response.body.first).to match(/site-alert.+Unable to process TRMNL API\./m)
       end
     end
   end
