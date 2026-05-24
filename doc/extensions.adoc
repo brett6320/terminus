@@ -35,8 +35,8 @@ The following provides a visual roadmap of current development and work that is 
 | Public                   | 🟢
 | Third Party              | ⚪️
 | Recipes                  | 🟢
-| Import/Export (Core)     | ⚪️
-| Import/Export (Terminus) | ⚪️
+| Import (Core)            | 🟢
+| Import/Export (Terminus) | 🟢
 |===
 
 == Walkthrough
@@ -120,7 +120,3 @@ This allows each device to answer an empty array, a single record, or multiple r
 === Server
 
 You can attach sensors to your Raspberry PI which allows you to access sensor records when building extensions. This is fully explained in the link:/doc/raspberry_pi.adoc[Raspberry Pi Documentation] for this project.
-
-== Import/Export
-
-The ability to import and export extensions is the next major feature to tackle. The goal is to allow you to import and export Terminus extensions along with the import and export of {core_link} plugins. The translation of Core plugins will be handled for you automatically. In the meantime, you can use the above _Walkthrough_ to do this manually.
