@@ -1,7 +1,8 @@
-<%= tag.section class: "reeler",
+<%= tag.section class: "htmx-slide",
                 **HTMX[
                   select_oob: "#slide, #progress, #actions",
-                  swap: "transition:true"
+                  swap: "transition:true",
+                  ext: :slide
                 ] do %>
 
   <div class="container">
@@ -37,7 +38,7 @@
 
       <%= render :direction, label: "First", uri: first_uri, direction: :backward, key: "[" %>
 
-      <button class="fullscreen" onclick="Terminus.toggleFullscreen()">
+      <button data-fullscreen-trigger>
         <%= image_tag "icons/fullscreen.svg",
                       alt: "Fullscreen",
                       class: :fullscreen,

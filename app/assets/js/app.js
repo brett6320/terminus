@@ -1,3 +1,5 @@
+import "htmx-slide/build/style.css";
+
 import "../css/settings.css";
 import "../css/colors.css";
 import "../css/keyframes.css";
@@ -23,7 +25,6 @@ import "../css/bits/popovers.css";
 import "../css/bits/secrets.css";
 import "../css/bits/text.css";
 import "../css/bits/toggles.css";
-import "../css/extensions/reeler.css";
 import "../css/pages/dashboard.css";
 import "../css/pages/designer.css";
 import "../css/pages/devices.css";
@@ -40,5 +41,6 @@ Alpine.start();
 
 import "htmx-ext-sse";
 import "htmx-remove";
+import "htmx-slide";
 
-import { Terminus } from "./terminus.js";
+import "./code_mirror.js";
