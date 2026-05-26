@@ -10,14 +10,21 @@ RSpec.describe Terminus::Structs::Model do
       name: "test",
       label: "Test",
       bit_depth: 4,
-      css: {"classes" => {"size" => "screen--lg", "density" => "screen--density-2x"}}
+      css: {
+        "classes" => {"size" => "screen--lg", "density" => "screen--density-2x"},
+        "variables" => [
+          %w[--screen-w 1040px],
+          %w[--screen-h 780px],
+          %w[--pixel-ratio 1.8]
+        ]
+      }
     }
   end
 
   describe "#css_classes" do
     it "answers classes with full information" do
       expect(model.css_classes).to eq(
-        "screen screen--test screen--4bit screen--landscape screen--lg screen--density-2x"
+        %w[screen screen--test screen--4bit screen--landscape screen--lg screen--density-2x]
       )
     end
 
@@ -25,13 +32,25 @@ RSpec.describe Terminus::Structs::Model do
       attributes.merge! name: nil, bit_depth: nil
 
       expect(model.css_classes).to eq(
-        "screen screen-- screen--bit screen--landscape screen--lg screen--density-2x"
+        %w[screen screen-- screen--bit screen--landscape screen--lg screen--density-2x]
       )
     end
 
     it "answers classes without model classes" do
       attributes[:css].clear
-      expect(model.css_classes).to eq("screen screen--test screen--4bit screen--landscape")
+      expect(model.css_classes).to eq(%w[screen screen--test screen--4bit screen--landscape])
+    end
+  end
+
+  describe "#css_variables" do
+    it "answers variables" do
+      expect(model.css_variables).to eq(
+        [
+          "--screen-w: 1040px;",
+          "--screen-h: 780px;",
+          "--pixel-ratio: 1.8;"
+        ]
+      )
     end
   end
 
