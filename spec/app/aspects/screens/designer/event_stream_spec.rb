@@ -9,50 +9,61 @@ RSpec.describe Terminus::Aspects::Screens::Designer::EventStream, :db do
 
   let(:screen) { Factory[:screen, :with_image] }
   let(:kernel) { class_spy Kernel }
-  let(:at) { Time.now.to_i }
 
   before { allow(kernel).to receive(:loop).and_yield }
 
-  describe "#each" do
-    it "answers image when screen is found" do
-      payload = nil
-      event_stream.each { payload = it }
+  describe "#call" do
+    let(:stream) { instance_spy StringIO }
 
-      expect(payload).to eq(<<~CONTENT)
+    it "answers image when screen is found" do
+      event_stream.call stream
+
+      expect(stream).to have_received(:write).with(<<~CONTENT)
         event: preview
         data: <img src="memory://abc123.png" alt="Preview" class="image" width="1" height="1"/>
 
       CONTENT
     end
 
+    it "sleeps for one second" do
+      event_stream.call stream
+      expect(kernel).to have_received(:sleep).with(1)
+    end
+
+    it "closes stream" do
+      event_stream.call stream
+      expect(stream).to have_received(:close)
+    end
+
     it "logs debug message when screen is found" do
-      event_stream.each { it == :ignore }
+      event_stream.call stream
       expect(logger.reread).to match(%r(DEBUG.+Streaming.+/abc123.png\.))
     end
 
     it "answers loader image when screen doesn't exist" do
       event_stream = described_class.new("bogus", kernel:)
 
-      payload = nil
-      event_stream.each { payload = it }
+      event_stream.call stream
 
-      expect(payload).to eq(<<~CONTENT)
+      expect(stream).to have_received(:write).with(<<~CONTENT)
         event: preview
         data: <img src="#{Hanami.app[:assets]["loader.svg"]}" alt="Loader" class="image" width="800" height="480"/>
 
       CONTENT
     end
 
-    it "logs debug message when screen doesn't exist" do
-      event_stream = described_class.new("bogus", kernel:)
-      event_stream.each { it == :ignore }
+    it "logs debug message when stream is disconnected" do
+      allow(kernel).to receive(:loop).and_raise(Errno::EPIPE)
+      event_stream.call stream
 
-      expect(logger.reread).to match(%r(DEBUG.+/assets/loader.*\.svg\.))
+      expect(logger.reread).to match(%r(DEBUG.+stream disconnected\.))
     end
 
-    it "sleeps for one second" do
-      event_stream.each(&:to_s)
-      expect(kernel).to have_received(:sleep).with(1)
+    it "logs debug message when screen doesn't exist" do
+      event_stream = described_class.new("bogus", kernel:)
+      event_stream.call stream
+
+      expect(logger.reread).to match(%r(DEBUG.+/assets/loader.*\.svg\.))
     end
   end
 end

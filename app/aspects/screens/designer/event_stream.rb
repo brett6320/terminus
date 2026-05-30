@@ -12,9 +12,19 @@ module Terminus
           include Deps[:assets, :logger, repository: "repositories.screen"]
           include Initable[%i[req name], kernel: Kernel]
 
-          def each
+          def call stream
+            indefinitely_write_to stream
+          rescue Errno::EPIPE, Errno::ECONNRESET, IOError
+            logger.debug { "Event stream disconnected." }
+          ensure
+            stream.close
+          end
+
+          private
+
+          def indefinitely_write_to stream
             kernel.loop do
-              yield <<~CONTENT
+              stream.write <<~CONTENT
                 event: preview
                 data: #{load_screen}
 
@@ -23,8 +33,6 @@ module Terminus
               kernel.sleep 1
             end
           end
-
-          private
 
           def load_screen
             repository.find_by(name:).then do |screen|
@@ -47,9 +55,7 @@ module Terminus
             %(<img src="#{path}" alt="Loader" class="image" width="800" height="480"/>)
           end
 
-          def debug path
-            logger.debug { "Streaming: #{path}." }
-          end
+          def debug(path) = logger.debug { "Streaming: #{path}." }
         end
       end
     end
