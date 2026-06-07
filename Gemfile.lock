@@ -172,14 +172,14 @@ GEM
       et-orbi (~> 1.4)
       raabro (~> 1.4)
     functionable (1.2.0)
-    git-lint (10.3.0)
+    git-lint (11.0.0)
       cogger (~> 2.3)
       containable (~> 2.3)
       core (~> 3.0)
       dry-monads (~> 1.9)
       dry-schema (~> 1.15)
       etcher (~> 4.3)
-      gitt (~> 5.0)
+      gitt (~> 5.3)
       infusible (~> 5.0)
       refinements (~> 14.0)
       runcom (~> 13.0)
@@ -187,11 +187,11 @@ GEM
       spek (~> 5.0)
       tone (~> 3.0)
       zeitwerk (~> 2.8)
-    gitt (5.2.0)
+    gitt (5.3.0)
       core (~> 3.0)
       dry-monads (~> 1.9)
       refinements (~> 14.0)
-      zeitwerk (~> 2.7)
+      zeitwerk (~> 2.8)
     hanami (2.3.2)
       bundler (>= 2.0)
       dry-configurable (~> 1.0, >= 1.2.0, < 2)
@@ -609,7 +609,7 @@ DEPENDENCIES
   dry-validation (~> 1.11)
   ferrum (~> 0.15)
   functionable (~> 1.0)
-  git-lint (~> 10.0)
+  git-lint (~> 11.0)
   hanami (~> 2.3)
   hanami-assets (~> 2.3)
   hanami-controller (~> 2.3)
@@ -724,8 +724,8 @@ CHECKSUMS
   fiber-storage (1.0.1) sha256=f48e5b6d8b0be96dac486332b55cee82240057065dc761c1ea692b2e719240e1
   fugit (1.12.2) sha256=643f2bf28db263bd400cbf8e0dd8b76b2c9b94bdb130e12d2394de04d9c20e5e
   functionable (1.2.0) sha256=76e9ddd98994b61dfef6cf3d9366eb4202101abed562363f6c30500fd62668da
-  git-lint (10.3.0) sha256=8a87c909c523b3b3682f07d0fc89369914abca06ce0104e12570bf2784257360
-  gitt (5.2.0) sha256=3eb08a9d9601923a682b0be0d7b82cd770dda51cd62696190b378e223b6a12c3
+  git-lint (11.0.0) sha256=84582ef7e5e40e0f73dbd23bdd7b9555ac6d7ad97f838464f7b9ee0ddb534b4e
+  gitt (5.3.0) sha256=f084d19d00b61231aaba2f2f85c063b10a96da1f7e48f4233cef09e9048e4a43
   hanami (2.3.2) sha256=2f1e7e10d760bd0c3929bcb55a42f38281bd5da507e40b98e62282f52f452e3b
   hanami-assets (2.3.0) sha256=c396bb735833458d0ceda013f498154eccafcae50c36db7f27cdd50f0560223d
   hanami-cli (2.3.5) sha256=213fc8181e566930821d830eae335b22e93c3e5018f4f22d0c13792d1e76f05e
