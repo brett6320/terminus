@@ -28,7 +28,6 @@
 :overmind_link: link:https://github.com/DarthSim/overmind[Overmind]
 :postgres_link: link:https://www.postgresql.org[PostgreSQL]
 :puma_link: link:https://puma.io[Puma]
-:rack_attack_link: link:https://github.com/rack/rack-attack[Rack Attack]
 :redis_link: link:https://redis.io[Redis]
 :render_link: link:https://render.com[Render]
 :rodauth_link: link:https://rodauth.jeremyevans.net[Rodauth]
