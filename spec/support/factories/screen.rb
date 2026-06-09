@@ -2,6 +2,7 @@
 
 Factory.define :screen, relation: :screen do |factory|
   factory.association :model
+  factory.kind "general"
   factory.sequence(:label) { "Screen #{it}" }
   factory.sequence(:name) { "screen_#{it}" }
 
