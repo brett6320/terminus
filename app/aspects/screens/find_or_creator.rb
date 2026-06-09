@@ -25,7 +25,9 @@ module Terminus
 
         private
 
-        def find(mold) = repository.find_by name: mold.name, model_id: mold.model_id
+        def find mold
+          repository.find_by device_id: mold.device_id, model_id: mold.model_id, kind: mold.kind
+        end
 
         def create mold
           temp_pather.call mold do |path|

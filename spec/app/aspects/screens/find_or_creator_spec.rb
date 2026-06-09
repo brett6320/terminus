@@ -7,33 +7,47 @@ RSpec.describe Terminus::Aspects::Screens::FindOrCreator, :db do
 
   describe "#call" do
     let(:model) { Factory[:model] }
+    let(:device) { Factory[:device, model_id: model.id] }
 
     it "answers existing screen when found" do
-      screen = Factory[:screen, model_id: model.id, name: "test", label: "Test"]
+      screen = Factory[
+        :screen,
+        model_id: model.id,
+        label: "Welcome",
+        name: "welcome",
+        kind: "welcome"
+      ]
 
-      expect(creator.call(name: "test", model_id: model.id).success).to have_attributes(
+      result = creator.call model_id: model.id, name: "test", kind: "welcome"
+
+      expect(result.success).to have_attributes(
         id: screen.id,
-        label: "Test",
-        name: "test"
+        label: "Welcome",
+        name: "welcome",
+        kind: "welcome"
       )
     end
 
     it "answers new screen when not found" do
       result = creator.call model_id: model.id,
-                            label: "Test",
-                            name: "test",
+                            device_id: device.id,
+                            label: "Welcome",
+                            name: "welcome",
+                            kind: "welcome",
                             content: "<h1>Test</h1>"
 
       expect(result.success).to have_attributes(
         model_id: model.id,
-        name: "test",
-        label: "Test",
+        device_id: device.id,
+        label: "Welcome",
+        name: "welcome",
+        kind: "welcome",
         image_attributes: hash_including(
           metadata: hash_including(
             size: kind_of(Integer),
             width: 800,
             height: 480,
-            filename: "test.png",
+            filename: "welcome.png",
             mime_type: "image/png"
           )
         )
