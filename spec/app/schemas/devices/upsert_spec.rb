@@ -15,20 +15,26 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
         mac_address: "AA:BB:CC:11:22:33",
         api_key: "secret",
         refresh_rate: 100,
+        image_cached: "on",
         image_timeout: 0,
         display_compatibility: "on",
         display_profile: "default",
+        firmware_profile: "on",
         firmware_update: "on",
         firmware_version: "1.2.3",
+        charging: "on",
         battery_charge: 85.0,
         battery_voltage: 3.5,
-        wifi: -75,
+        wifi_band: 2.4,
+        wifi_signal: -75,
         width: 800,
         height: 480,
         touch_bar: "tap",
+        wake_duration: 123,
         wake_reason: "Awoken from test.",
         sleep_start_at: "18:00:00",
-        sleep_end_at: "06:00:00"
+        sleep_stop_at: "06:00:00",
+        synced_at: "2026-06-01T01:02:03+00:00"
       }
     end
 
@@ -41,6 +47,14 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
 
       expect(contract.call(attributes).errors.to_h).to include(
         battery_charge: ["must be greater than or equal to 0"]
+      )
+    end
+
+    it "answers failure when wifi band is less than zero" do
+      attributes[:wifi_band] = -1
+
+      expect(contract.call(attributes).errors.to_h).to include(
+        wifi_band: ["must be greater than or equal to 0"]
       )
     end
 
@@ -60,6 +74,15 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
       )
     end
 
+    it "answers true when image cached is truthy" do
+      expect(contract.call(attributes).to_h).to include(image_cached: true)
+    end
+
+    it "answers false when image cached key is missing" do
+      attributes.delete :image_cached
+      expect(contract.call(attributes).to_h).to include(image_cached: false)
+    end
+
     it "answers true when display compatibility is truthy" do
       expect(contract.call(attributes).to_h).to include(display_compatibility: true)
     end
@@ -69,6 +92,15 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
       expect(contract.call(attributes).to_h).to include(display_compatibility: false)
     end
 
+    it "answers true when firmware profile is truthy" do
+      expect(contract.call(attributes).to_h).to include(firmware_profile: true)
+    end
+
+    it "answers false when firmware_profile key is missing" do
+      attributes.delete :firmware_profile
+      expect(contract.call(attributes).to_h).to include(firmware_profile: false)
+    end
+
     it "answers true when firmware update is truthy" do
       expect(contract.call(attributes).to_h).to include(firmware_update: true)
     end
@@ -76,6 +108,15 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
     it "answers false when firmware update key is missing" do
       attributes.delete :firmware_update
       expect(contract.call(attributes).to_h).to include(firmware_update: false)
+    end
+
+    it "answers true when charging is truthy" do
+      expect(contract.call(attributes).to_h).to include(charging: true)
+    end
+
+    it "answers false when charging key is missing" do
+      attributes.delete :charging
+      expect(contract.call(attributes).to_h).to include(charging: false)
     end
   end
 end

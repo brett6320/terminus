@@ -25,6 +25,7 @@ RSpec.describe Terminus::Serializers::Device do
       firmware_version: "1.2.3",
       wake_reason: nil,
       wake_duration: 125,
+      wifi_band: 0,
       wifi_signal: -40,
       battery_charge: 0.0,
       battery_voltage: 3.0,

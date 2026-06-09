@@ -17,6 +17,8 @@ Metrics/BlockLength:
 Metrics/CollectionLiteralLength:
   Exclude:
     - app/serializers/device.rb
+    - spec/app/contracts/devices/patch_spec.rb
+    - spec/app/schemas/devices/upsert_spec.rb
     - spec/app/serializers/device_spec.rb
     - spec/requests/devices_spec.rb
 Metrics/CyclomaticComplexity:

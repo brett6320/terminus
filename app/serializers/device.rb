@@ -16,6 +16,7 @@ module Terminus
         firmware_profile
         firmware_update
         firmware_version
+        wifi_band
         wifi_signal
         battery_charge
         battery_voltage
