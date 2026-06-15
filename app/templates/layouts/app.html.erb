@@ -27,6 +27,11 @@
                  rel: :manifest,
                  href: assets["manifest.webmanifest"] %>
 
+    <%= tag.link title: "Terminus: Versions",
+                 rel: :alternate,
+                 href: "https://alchemists.io/feeds/projects/terminus.xml",
+                 type: "application/atom+xml" %>
+
     <%= tag.link title: "Terminus: Stylesheet", rel: :stylesheet, href: assets["app.css"] %>
 
     <%= javascript_tag "app", defer: true %>
