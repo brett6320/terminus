@@ -8,21 +8,22 @@ RSpec.describe Terminus::Actions::Designs::Create, :db do
   include_context "with application dependencies"
 
   describe "#call" do
-    let(:model) { Factory[:model, name: "og_png"] }
-    let(:parameters) { {template: {name: :test, label: "Test", content: "<p>Test</p>"}} }
     let(:repository) { Terminus::Repositories::Screen.new }
+    let(:model) { Factory[:model] }
 
-    before { model }
-
-    it "answers original content" do
-      response = Rack::MockRequest.new(action).post "",
-                                                    "HTTP_HX_REQUEST" => "true",
-                                                    params: parameters
-      expect(response.body).to eq("<p>Test</p>")
+    let :parameters do
+      {
+        model_id: model.id,
+        template: {
+          label: "Test",
+          name: :test,
+          content: "<p>Test</p>"
+        }
+      }
     end
 
-    it "creates screen when none exists" do
-      Rack::MockRequest.new(action).post "", "HTTP_HX_REQUEST" => "true", params: parameters
+    it "creates screen" do
+      Rack::MockRequest.new(action).post "", params: parameters
 
       expect(repository.find_by(name: "test")).to have_attributes(
         model_id: model.id,
@@ -40,35 +41,16 @@ RSpec.describe Terminus::Actions::Designs::Create, :db do
       )
     end
 
-    it "recreates screen when screen exists by same name" do
-      Factory[:screen, model_id: model.id, name: "test", label: "Old"]
-      Rack::MockRequest.new(action).post "", "HTTP_HX_REQUEST" => "true", params: parameters
-
-      expect(repository.find_by(name: "test")).to have_attributes(
-        model_id: model.id,
-        name: "test",
-        label: "Test"
-      )
-    end
-
-    it "answers created status" do
-      response = Rack::MockRequest.new(action).post "",
-                                                    "HTTP_HX_REQUEST" => "true",
-                                                    params: parameters
-
-      expect(response.status).to eq(201)
-    end
-
-    it "renders show view when form is submitted" do
+    it "redirects to edit page" do
       response = Rack::MockRequest.new(action).post "", params: parameters
-      expect(response.body).to include("Welcome to the Terminus designer!")
+      expect(response.location).to match(%r(designs/\d+/edit))
     end
 
-    it "answers unprocessable content with invalid parameters" do
-      parameters[:template].delete :name
+    it "answers error when attribute is missing" do
+      parameters[:template].delete :label
       response = Rack::MockRequest.new(action).post "", params: parameters
 
-      expect(response.status).to eq(422)
+      expect(response.body).to include("is missing")
     end
   end
 end

@@ -4,21 +4,19 @@ module Terminus
   module Actions
     module Designs
       # The create action.
-      class Create < Action
+      class Create < Terminus::Action
         include Deps[
-          :htmx,
           "aspects.screens.upserter",
-          model_repository: "repositories.model",
-          screen_repository: "repositories.screen",
-          view: "views.designer.show"
+          template_repository: "repositories.screen_template",
+          model_repository: "repositories.model"
         ]
 
-        using Refines::Actions::Response
-
         params do
-          required(:template).filled(:hash) do
-            required(:name).filled :string
+          required(:model_id).filled :integer
+
+          required(:template).hash do
             required(:label).filled :string
+            required(:name).filled :string
             required(:content).filled :string
           end
         end
@@ -26,31 +24,29 @@ module Terminus
         def handle request, response
           parameters = request.params
 
-          halt 422 unless parameters.valid?
-
-          if htmx.request? request.env, :request, "true"
-            render_text parameters[:template], response
+          if parameters.valid?
+            create_with_screen parameters, response
           else
-            response.render view, id: Time.new.utc.to_i
+            error response, parameters
           end
         end
 
         private
 
-        def render_text template, response
-          name, label, content = template.values_at :name, :label, :content
+        def create_with_screen parameters, response
+          template = template_repository.create parameters[:template]
 
-          rebuild_screen name, label, content
-          response.with body: content.strip, status: 201
+          upserter.call(model_id: parameters[:model_id], **template.screen_attributes)
+          response.redirect_to routes.path(:design_edit, id: template.id)
         end
 
-        def rebuild_screen name, label, content
-          screen_repository.find_by(name:).then { screen_repository.delete it.id if it }
-          upserter.call model_id: load_model.id, name:, label:, content:
+        def error response, parameters
+          response.render view,
+                          models: model_repository.all,
+                          template: nil,
+                          fields: parameters[:template],
+                          errors: parameters.errors[:template]
         end
-
-        # FIX: Use dynamic lookup once the UI support picking the correct model.
-        def load_model = model_repository.find_by name: "og_png"
       end
     end
   end
