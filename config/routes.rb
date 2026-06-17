@@ -79,6 +79,7 @@ module Terminus
     get "/designs", to: "designs.index", as: :designs
     get "/designs/new", to: "designs.new", as: :design_new
     post "/designs", to: "designs.create", as: :designs
+    get "/designs/:id/edit", to: "designs.edit", as: :design_edit
 
     get "/extensions", to: "extensions.index", as: :extensions
     get "/extensions/new", to: "extensions.new", as: :extension_new
