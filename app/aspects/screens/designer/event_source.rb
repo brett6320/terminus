@@ -12,12 +12,12 @@ module Terminus
           include Deps[
             :logger,
             repository: "repositories.screen",
-            view: "views.designer.event_stream"
+            view: "views.designs.event_stream"
           ]
           include Initable[%i[req id], kernel: Kernel]
 
           def call stream
-            indefinitely_write_to stream
+            write stream
           rescue Errno::EPIPE, Errno::ECONNRESET, IOError
             logger.debug { "Event stream disconnected." }
           ensure
@@ -26,7 +26,7 @@ module Terminus
 
           private
 
-          def indefinitely_write_to stream
+          def write stream
             kernel.loop do
               stream.write <<~CONTENT
                 event: preview

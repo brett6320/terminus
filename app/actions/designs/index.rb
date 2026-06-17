@@ -2,9 +2,9 @@
 
 module Terminus
   module Actions
-    module Designer
-      # The show action.
-      class Show < Action
+    module Designs
+      # The index action.
+      class Index < Action
         def handle(*, response) = response.render view
       end
     end

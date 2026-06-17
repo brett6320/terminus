@@ -1,11 +1,11 @@
 <% content_for :htmx_merge, "defaultSwapStyle" => "innerHTML" %>
 
-<%= render "shared/title", text: "Designer" %>
+<%= render "shared/title", text: "Designs" %>
 
 <section class="bit-page page-designer">
   <header class="bit-header">
     <h1 class="label">
-      Designer
+      Designs
       <%= render "shared/popovers/triggers/default", name: :overview, width: 20, height: 20 %>
     </h1>
   </header>
@@ -20,7 +20,7 @@
     </figure>
 
     <div class="bit-card">
-      <%= form_for :template, routes.path(:designer), class: "bit-form" do |form| %>
+      <%= form_for :template, routes.path(:designs), class: "bit-form" do |form| %>
         <%= form.hidden_field :name, value: name %>
         <%= form.hidden_field :label, value: label %>
 
@@ -34,7 +34,7 @@
           <%= form.submit "Save",
                           class: "bit-button-accept",
                           **HTMX[
-                            post: routes.path(:designer),
+                            post: routes.path(:designs),
                             trigger: "load, click, keyup[ctrlKey&&key=='s'] from:body",
                             swap: :none,
                             disabled_elt: "this"

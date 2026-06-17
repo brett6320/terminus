@@ -2,7 +2,7 @@
 
 module Terminus
   module Actions
-    module Designer
+    module Designs
       # The create action.
       class Create < Action
         include Deps[

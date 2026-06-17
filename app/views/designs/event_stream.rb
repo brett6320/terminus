@@ -2,7 +2,7 @@
 
 module Terminus
   module Views
-    module Designer
+    module Designs
       # The even stream view.
       class EventStream < View
         expose :screen

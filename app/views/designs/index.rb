@@ -2,9 +2,9 @@
 
 module Terminus
   module Views
-    module Designer
-      # The show view.
-      class Show < View
+    module Designs
+      # The index view.
+      class Index < View
         expose :name, default: :terminus_designer
         expose :label, default: "Designer"
       end

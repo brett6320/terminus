@@ -72,7 +72,8 @@ module Terminus
     get "/devices/:device_id/logs/:id", to: "devices.logs.show", as: :device_log
     delete "/devices/:device_id/logs/:id", to: "devices.logs.delete", as: :device_log
 
-    resource :designer, to: "designer", only: %i[show create]
+    get "/designs", to: "designs.index", as: :designs
+    post "/designs", to: "designs.create", as: :designs
 
     get "/extensions", to: "extensions.index", as: :extensions
     get "/extensions/new", to: "extensions.new", as: :extension_new

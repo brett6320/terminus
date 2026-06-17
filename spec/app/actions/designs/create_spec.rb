@@ -2,7 +2,7 @@
 
 require "hanami_helper"
 
-RSpec.describe Terminus::Actions::Designer::Create, :db do
+RSpec.describe Terminus::Actions::Designs::Create, :db do
   subject(:action) { described_class.new }
 
   include_context "with application dependencies"
