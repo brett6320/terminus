@@ -2,8 +2,8 @@
 
 require "hanami_helper"
 
-RSpec.describe Terminus::Aspects::Screens::Designer::EventStream, :db do
-  subject(:event_stream) { described_class.new screen.name, kernel: }
+RSpec.describe Terminus::Aspects::Screens::Designer::EventSource, :db do
+  subject(:event_stream) { described_class.new screen.id, kernel: }
 
   include_context "with application dependencies"
 
@@ -27,7 +27,7 @@ RSpec.describe Terminus::Aspects::Screens::Designer::EventStream, :db do
 
     it "sleeps for one second" do
       event_stream.call stream
-      expect(kernel).to have_received(:sleep).with(1)
+      expect(kernel).to have_received(:sleep).with(0.5)
     end
 
     it "closes stream" do
@@ -36,7 +36,7 @@ RSpec.describe Terminus::Aspects::Screens::Designer::EventStream, :db do
     end
 
     it "answers loader image when screen doesn't exist" do
-      event_stream = described_class.new("bogus", kernel:)
+      event_stream = described_class.new(666, kernel:)
 
       event_stream.call stream
 

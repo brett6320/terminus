@@ -3,7 +3,7 @@
 
 require "initable"
 
-require_relative "event_stream"
+require_relative "event_source"
 
 module Terminus
   module Aspects
@@ -16,12 +16,10 @@ module Terminus
             %i[keyreq pattern],
             headers: {
               "Cache-Control" => "no-cache",
-              "Connection" => "keep-alive",
-              "Content-Encoding" => "identity",
               "Content-Type" => "text/event-stream",
               "X-Accel-Buffering" => "no"
             },
-            event_stream: EventStream
+            event_stream: EventSource
           ]
 
           def call environment
@@ -29,9 +27,10 @@ module Terminus
             path = request.path
 
             case path.match pattern
-              in name:
-                environment["rack.session.options"][:skip] = true
-                [200, headers, event_stream.new(name)]
+              in id:
+                environment["puma.mark_as_io_bound"].then { it.call if it }
+                environment["rack.session.options"].then { it[:skip] = true if it }
+                [200, headers, event_stream.new(id)]
               else application.call environment
             end
           end

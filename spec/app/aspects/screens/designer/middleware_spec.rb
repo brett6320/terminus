@@ -3,17 +3,13 @@
 require "hanami_helper"
 
 RSpec.describe Terminus::Aspects::Screens::Designer::Middleware do
-  subject(:middleware) { described_class.new application, pattern: %r(/preview/(?<name>.+)) }
+  subject(:middleware) { described_class.new application, pattern: %r(/preview/(?<id>.+)) }
 
   let(:application) { proc { [200, {}, []] } }
 
   describe "#call" do
-    let :environment do
-      Rack::MockRequest.env_for(path, method: :get)
-                       .tap { it["rack.session.options"] = {skip: false} }
-    end
-
-    let(:path) { +"/preview/test" }
+    let(:environment) { Rack::MockRequest.env_for path, method: :get }
+    let(:path) { +"/preview/1" }
 
     it "answers event stream when path matches" do
       expect(middleware.call(environment)).to match(
@@ -21,32 +17,47 @@ RSpec.describe Terminus::Aspects::Screens::Designer::Middleware do
           200,
           {
             "Cache-Control" => "no-cache",
-            "Connection" => "keep-alive",
-            "Content-Encoding" => "identity",
             "Content-Type" => "text/event-stream",
             "X-Accel-Buffering" => "no"
           },
-          instance_of(Terminus::Aspects::Screens::Designer::EventStream)
+          instance_of(Terminus::Aspects::Screens::Designer::EventSource)
         )
       )
     end
 
-    it "passes name to event stream" do
-      event_stream = class_spy Terminus::Aspects::Screens::Designer::EventStream
+    it "passes ID to event stream" do
+      event_stream = class_spy Terminus::Aspects::Screens::Designer::EventSource
 
       middleware = described_class.new(
         application,
-        pattern: %r(/preview/(?<name>.+)),
+        pattern: %r(/preview/(?<id>.+)),
         event_stream:
       )
 
       middleware.call environment
 
-      expect(event_stream).to have_received(:new).with("test")
+      expect(event_stream).to have_received(:new).with("1")
+    end
+
+    it "marks as I/O bound" do
+      marker = instance_spy Proc
+      environment["puma.mark_as_io_bound"] = marker
+      middleware.call environment
+
+      expect(marker).to have_received(:call)
+    end
+
+    it "doesn't mark as I/O bound when key is missing" do
+      environment.delete "puma.mark_as_io_bound"
+      expectation = proc { middleware.call environment }
+
+      expect(&expectation).not_to raise_error
     end
 
     it "updates session options to be skipped" do
+      environment["rack.session.options"] = {skip: false}
       middleware.call environment
+
       expect(environment.dig("rack.session.options", :skip)).to be(true)
     end
 

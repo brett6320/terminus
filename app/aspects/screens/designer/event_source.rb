@@ -7,14 +7,14 @@ module Terminus
   module Aspects
     module Screens
       module Designer
-        # Renders device preview image event streams.
-        class EventStream
+        # Writes image updates to a stream.
+        class EventSource
           include Deps[
             :logger,
             repository: "repositories.screen",
             view: "views.designer.event_stream"
           ]
-          include Initable[%i[req name], kernel: Kernel]
+          include Initable[%i[req id], kernel: Kernel]
 
           def call stream
             indefinitely_write_to stream
@@ -34,12 +34,12 @@ module Terminus
 
               CONTENT
 
-              kernel.sleep 1
+              kernel.sleep 0.5
             end
           end
 
           def render_data
-            repository.find_by(name:).then do |screen|
+            repository.find_by(id:).then do |screen|
               view.call(screen:, layout: false)
                   .to_s
                   .strip
