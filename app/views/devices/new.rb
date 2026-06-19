@@ -10,8 +10,8 @@ module Terminus
         expose :models
         expose :playlists
         expose :device
-        expose :fields, default: Core::EMPTY_HASH
-        expose :errors, default: Core::EMPTY_HASH
+        expose :fields, decorate: false, default: Core::EMPTY_HASH
+        expose :errors, decorate: false, default: Core::EMPTY_HASH
       end
     end
   end

@@ -25,7 +25,7 @@
                    class: "bit-card bit-form" do |form| %>
         <h1 class="label">Edit Firmware</h1>
 
-        <%= render "firmware/shared/fields", form:, firmware:, fields: fields.value, errors: %>
+        <%= render "firmware/shared/fields", form:, firmware:, fields:, errors: %>
 
         <div class="form-actions">
           <%= form.submit "Save", class: "bit-button-accept" %>

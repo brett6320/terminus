@@ -28,7 +28,7 @@
         <% end %>
 
         <%= scope(:popover_screen_content, **screen.popover_attributes).render %>
-        <%= render "screens/shared/fields", form:, models:, screen:, fields: fields.value, errors: %>
+        <%= render "screens/shared/fields", form:, models:, screen:, fields:, errors: %>
 
         <div class="form-actions">
           <%= form.submit "Save", class: "bit-button-accept" %>

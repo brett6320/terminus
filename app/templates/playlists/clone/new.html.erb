@@ -18,7 +18,7 @@
                    class: "bit-card bit-form playlist" do |form| %>
         <h1 class="label">Clone Playlist</h1>
 
-        <%= render "playlists/shared/fields", form:, playlist:, fields: fields.value, errors: %>
+        <%= render "playlists/shared/fields", form:, playlist:, fields:, errors: %>
 
         <div class="form-actions">
           <%= form.submit "Save", class: "bit-button-accept" %>

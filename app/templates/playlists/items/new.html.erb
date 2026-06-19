@@ -2,7 +2,7 @@
              routes.path(:playlist_item_new, playlist_id: playlist.id),
              class: "bit-form",
              **HTMX[ext: :remove] do |form| %>
-  <%= render :fields, form:, screen_options:, item:, fields: fields.value, errors: %>
+  <%= render :fields, form:, screen_options:, item:, fields:, errors: %>
 
   <div class="form-actions">
     <%= form.submit "Save",

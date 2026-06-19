@@ -19,7 +19,7 @@
                    class: "bit-card bit-form playlist" do |form| %>
         <h1 class="label">New Playlist</h1>
 
-        <%= render "playlists/shared/fields", form:, playlist:, fields: fields.value, errors: %>
+        <%= render "playlists/shared/fields", form:, playlist:, fields:, errors: %>
 
         <div class="form-actions">
           <%= render "shared/actions/save", form:, path: routes.path(:playlists) %>

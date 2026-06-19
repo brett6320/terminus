@@ -11,8 +11,8 @@ module Terminus
           expose :playlist
           expose :screen_options, decorate: false
           expose :item
-          expose :fields, default: Core::EMPTY_HASH
-          expose :errors, default: Core::EMPTY_HASH
+          expose :fields, decorate: false, default: Core::EMPTY_HASH
+          expose :errors, decorate: false, default: Core::EMPTY_HASH
         end
       end
     end
