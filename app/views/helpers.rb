@@ -58,7 +58,7 @@ module Terminus
         tag = Hanami.app[:settings].git_tag
 
         link_to "Version #{tag}",
-                "https://github.com/usetrmnl/terminus/releases/tag/#{tag}",
+                "https://alchemists.io/projects/terminus/versions/#{tag}/",
                 class: :link
       end
 
