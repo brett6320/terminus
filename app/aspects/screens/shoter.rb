@@ -16,27 +16,27 @@ module Terminus
         using Refinements::Pathname
         using Refinements::String
 
-        OPTIONS = {
+        BROWSER_OPTIONS = {
           "disable-dev-shm-usage" => nil,
           "disable-gpu" => nil,
           "hide-scrollbar" => nil,
           "no-sandbox" => nil
         }.freeze
 
-        def initialize(browser: Ferrum::Browser, options: OPTIONS, **)
+        def initialize(browser: Ferrum::Browser, browser_options: BROWSER_OPTIONS, **)
           super(**)
           @browser = browser
-          @settings = settings.browser.merge! browser_options: options
+          @options = settings.browser.merge! browser_options:
         end
 
         def call(content, output_path, **viewport) = save content, viewport, output_path
 
         private
 
-        attr_reader :settings, :browser
+        attr_reader :options, :browser
 
         def save content, viewport, output_path
-          instance = browser.new settings
+          instance = browser.new options
           page = instance.create_page
 
           Pathname.mktmpdir do |work_dir|
@@ -75,7 +75,7 @@ module Terminus
           instance.quit if instance
           logger.debug { "Screen shoter has timeout: #{error.message}" }
 
-          seconds = settings.fetch :timeout, 0
+          seconds = options.fetch :timeout, 0
 
           Failure "Unable to capture screenshot due to timming out after " \
                   + %(#{seconds} #{"second".pluralize "s"}. ) \
@@ -91,7 +91,7 @@ module Terminus
         def handle_process_timeout_error error
           logger.debug { "Screen shoter has process timeout: #{error.message}" }
 
-          seconds = settings.fetch :process_timeout, 0
+          seconds = options.fetch :process_timeout, 0
 
           Failure "Unable to capture screenshot because the browser could not produce a " \
                   + %(websocket URL within #{seconds} #{"second".pluralize "s"}.)
