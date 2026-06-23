@@ -21,7 +21,7 @@ Factory = ROM::Factory.configure { |config| config.rom = Hanami.app["db.rom"] }
 
 ENV["LD_PRELOAD"] = nil
 Capybara.app = Hanami.app
-Capybara.server = :puma, {Silent: true, Threads: "0:1"}
+Capybara.server = :puma, {Silent: true, Threads: "2:2"}
 Capybara.javascript_driver = :cuprite
 Capybara.save_path = Hanami.app.root.join "tmp/capybara"
 Capybara.register_driver :cuprite do |app|
