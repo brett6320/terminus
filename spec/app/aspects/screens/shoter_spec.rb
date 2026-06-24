@@ -43,6 +43,11 @@ RSpec.describe Terminus::Aspects::Screens::Shoter do
       expect(shoter.call(content, path, width: 800, height: 480)).to be_success(path)
     end
 
+    it "logs options" do
+      shoter.call content, path, width: 800, height: 480
+      expect(logger.reread).to match(/DEBUG.+Ferrum browser options\..+js_errors.+true/)
+    end
+
     context "with browser error" do
       subject(:shoter) { described_class.new browser: }
 

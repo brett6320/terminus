@@ -47,6 +47,7 @@ module Terminus
         attr_reader :options, :browser
 
         def save content, viewport, output_path
+          log_options
           instance = browser.new options
           page = instance.create_page
 
@@ -64,6 +65,15 @@ module Terminus
         rescue Ferrum::TimeoutError => error then handle_timeout_error instance, error
         rescue Ferrum::NoSuchTargetError => error then handle_no_such_target_error instance, error
         rescue Ferrum::ProcessTimeoutError => error then handle_process_timeout_error error
+        end
+
+        def log_options
+          logger.debug do
+            first = options.dup
+            second = first.delete :browser_options
+
+            {tags: [first, second], message: "Ferrum browser options."}
+          end
         end
 
         def handle_browser_error instance, error
