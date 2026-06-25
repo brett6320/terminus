@@ -6,42 +6,14 @@ RSpec.describe Terminus::Actions::Playlists::Screens::Show, :db do
   subject(:action) { described_class.new }
 
   describe "#call" do
-    let(:playlist) { Factory[:playlist, mode: "manual"] }
-    let(:screen) { Factory[:screen, :with_image] }
-    let(:item) { Factory[:playlist_item, playlist_id: playlist.id, screen_id: screen.id] }
+    let(:item) { Factory[:playlist_item] }
 
     before { item }
 
-    it "advances current item when in manual mode" do
-      action.call Rack::MockRequest.env_for(
-        playlist.id.to_s,
-        "router.params" => {playlist_id: playlist.id, id: screen.id}
-      )
-
-      expectation = Terminus::Repositories::Playlist.new.find playlist.id
-
-      expect(expectation.current_item_id).to eq(item.id)
-    end
-
-    context "when in automatic mode" do
-      let(:playlist) { Factory[:playlist, mode: "automatic"] }
-
-      it "doesn't advance current item when in automatic mode" do
-        action.call Rack::MockRequest.env_for(
-          playlist.id.to_s,
-          "router.params" => {playlist_id: playlist.id, id: screen.id}
-        )
-
-        expectation = Terminus::Repositories::Playlist.new.find playlist.id
-
-        expect(expectation.current_item_id).to be(nil)
-      end
-    end
-
     it "renders default response" do
       response = action.call Rack::MockRequest.env_for(
-        playlist.id.to_s,
-        "router.params" => {playlist_id: playlist.id, id: screen.id}
+        item.playlist.id.to_s,
+        "router.params" => {playlist_id: item.playlist_id, id: item.screen_id}
       )
 
       expect(response.body.first).to include("<!DOCTYPE html>")
@@ -49,9 +21,9 @@ RSpec.describe Terminus::Actions::Playlists::Screens::Show, :db do
 
     it "renders htmx response" do
       response = action.call Rack::MockRequest.env_for(
-        playlist.id.to_s,
+        item.playlist_id.to_s,
         "HTTP_HX_REQUEST" => "true",
-        "router.params" => {playlist_id: playlist.id, id: screen.id}
+        "router.params" => {playlist_id: item.playlist_id, id: item.screen_id}
       )
 
       expect(response.body.first).to have_htmx_title(/Playlist \d+ Screens/)

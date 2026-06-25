@@ -6,12 +6,7 @@ module Terminus
       module Screens
         # The show action.
         class Show < Action
-          include Deps[
-            :htmx_layout,
-            repository: "repositories.playlist",
-            item_repository: "repositories.playlist_item"
-          ]
-
+          include Deps[:htmx_layout, "aspects.playlists.current_item_advancer"]
           include Initable[slide_window: Aspects::Playlists::SlideWindow]
 
           params do
@@ -24,32 +19,19 @@ module Terminus
 
             halt :unprocessable_content unless parameters.valid?
 
-            response.render view, **view_settings(request, update_current_item(parameters))
+            response.render view, **view_settings(request, advance_current_item(parameters))
           end
 
           private
 
-          def update_current_item parameters
-            playlist_id = parameters[:playlist_id]
-
-            repository.with_screens.by_pk(playlist_id).one.tap do |playlist|
-              return playlist if playlist.automatic?
-
-              item = item_repository.find_by playlist_id:, screen_id: parameters[:id]
-              repository.update playlist_id, current_item_id: item.id
-            end
-          end
-
           def view_settings request, playlist
             before, current, after = slide_window.new(playlist).screens request.params[:id]
+            {playlist:, before:, current:, after:, layout: htmx_layout.call(request)}
+          end
 
-            {
-              playlist:,
-              before:,
-              current:,
-              after:,
-              layout: htmx_layout.call(request)
-            }
+          def advance_current_item parameters
+            playlist_id, screen_id = parameters.to_h.values_at :playlist_id, :id
+            current_item_advancer.call playlist_id, screen_id:
           end
         end
       end
