@@ -10,6 +10,7 @@ RSpec.describe Terminus::Schemas::Firmware::Header do
   describe ".call" do
     it "answers valid contract" do
       expect(contract.call(firmware_headers).to_h).to eq(
+        HTTP_ACCESS_TOKEN: nil,
         HTTP_BATTERY_VOLTAGE: 4.74,
         HTTP_FW_VERSION: "1.2.3",
         HTTP_HEIGHT: 480,

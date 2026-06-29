@@ -67,7 +67,7 @@ RSpec.describe Terminus::Aspects::Firmware::Headers::Parser do
     end
 
     it "answers failure with invalid headers" do
-      firmware_headers.delete "HTTP_ID"
+      firmware_headers["HTTP_ID"] = "bogus"
 
       expect(parser.call(firmware_headers)).to be_failure(
         Terminus::Schemas::Firmware::Header.call(firmware_headers)

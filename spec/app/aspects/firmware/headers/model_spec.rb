@@ -38,6 +38,7 @@ RSpec.describe Terminus::Aspects::Firmware::Headers::Model do
 
       expect(record).to eq(
         described_class[
+          api_key: "",
           battery_charge: "85",
           battery_voltage: "4.74",
           charging: "false",

@@ -7,6 +7,7 @@ module Terminus
     module Firmware
       module Headers
         KEY_MAP = {
+          HTTP_ACCESS_TOKEN: :api_key,
           HTTP_BATTERY_VOLTAGE: :battery_voltage,
           HTTP_FW_VERSION: :firmware_version,
           HTTP_HEIGHT: :height,
