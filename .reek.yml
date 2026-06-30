@@ -117,6 +117,7 @@ detectors:
       - Terminus::Providers::Sidekiq#load_schedule
       - Terminus::Views::Parts::Device#battery_voltage_to_percent
       - Terminus::Views::Parts::Device#wifi_percentage
+      - Terminus::Views::Parts::DeviceLog#level_class
   UtilityFunction:
     exclude:
       - SQLLoggerPatch#log_query
