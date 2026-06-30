@@ -31,6 +31,20 @@ COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings
 
 
 --
+-- Name: device_log_level_enum; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.device_log_level_enum AS ENUM (
+    'debug',
+    'info',
+    'warn',
+    'error',
+    'fatal',
+    'any'
+);
+
+
+--
 -- Name: device_sensor_kind; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -328,7 +342,8 @@ CREATE TABLE public.device_log (
     free_heap_size integer DEFAULT 0 CONSTRAINT device_logs_free_heap_size_not_null NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP CONSTRAINT device_logs_created_at_not_null NOT NULL,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP CONSTRAINT device_logs_updated_at_not_null NOT NULL,
-    max_alloc_size integer DEFAULT 0 CONSTRAINT device_logs_max_alloc_size_not_null NOT NULL
+    max_alloc_size integer DEFAULT 0 CONSTRAINT device_logs_max_alloc_size_not_null NOT NULL,
+    level public.device_log_level_enum DEFAULT 'any'::public.device_log_level_enum NOT NULL
 );
 
 
@@ -1281,6 +1296,13 @@ CREATE INDEX audit_user_at_idx ON public.user_authentication_audit_log USING btr
 
 
 --
+-- Name: device_log_level_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX device_log_level_index ON public.device_log USING btree (level);
+
+
+--
 -- Name: device_logs_device_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1785,4 +1807,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260609142235_add_screen_device_id_and_kind_columns.rb'),
 ('20260610103052_remove_device_api_key_and_friendly_id_columns.rb'),
 ('20260615094348_create_screen_template.rb'),
-('20260618094125_add_screen_template_id_column.rb');
+('20260618094125_add_screen_template_id_column.rb'),
+('20260630091508_add_device_log_level_column.rb');
