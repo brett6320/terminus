@@ -3,8 +3,6 @@
 require "hanami_helper"
 
 RSpec.describe Terminus::Views::Parts::Device, :db do
-  using Refinements::Pathname
-
   subject(:part) { described_class.new value: device, rendering: Terminus::View.new.rendering }
 
   let(:device) { Factory[:device] }
