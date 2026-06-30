@@ -21,8 +21,9 @@ module Terminus
               required(:created_at).filled :integer
               required(:firmware_version).filled :string
               required(:free_heap_size).filled :integer
-              required(:max_alloc_size).filled :integer
               required(:id).filled :integer
+              optional(:level).filled Types::LogLevel
+              required(:max_alloc_size).filled :integer
               required(:message).filled :string
               required(:refresh_rate).filled :integer
               optional(:retry).filled :integer

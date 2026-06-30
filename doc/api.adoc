@@ -113,8 +113,8 @@ curl -X "POST" "https://localhost:2443/api/log" \
      -d $'{
   "logs": [
     {
-      "id": 666,
-      "message": "An API test.",
+      "id": 1,
+      "message": "A test.",
       "wifi_status": "connected",
       "created_at": 1742022124,
       "sleep_duration": 31,
@@ -122,8 +122,9 @@ curl -X "POST" "https://localhost:2443/api/log" \
       "free_heap_size": 160656,
       "max_alloc_size": 180000,
       "source_path": "src/bl.cpp",
+      "level": "debug",
+      "firmware_version": "1.8.6",
       "wake_reason": "timer",
-      "firmware_version": "1.5.2",
       "retry": 1,
       "battery_voltage": 4.772,
       "source_line": 597,
