@@ -17,7 +17,7 @@ module Terminus
 
         using Refinements::String
 
-        def call(**attributes)
+        def call **attributes
           result = contract.call(attributes).to_monad
 
           return result if result.failure?

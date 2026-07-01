@@ -10,7 +10,7 @@ module Terminus
         include Deps[repository: "repositories.model"]
         include Dry::Monads[:result]
 
-        def call(id, **overrides)
+        def call id, **overrides
           original = repository.find id
           attributes = {label: "#{original.label} Clone", name: "#{original.name}_clone"}
 

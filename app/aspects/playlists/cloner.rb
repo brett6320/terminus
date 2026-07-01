@@ -13,7 +13,7 @@ module Terminus
         ]
         include Dry::Monads[:result]
 
-        def call(id, **overrides)
+        def call id, **overrides
           original = repository.with_items.by_pk(id).one
           attributes = {label: "#{original.label} Clone", name: "#{original.name}_clone"}
 

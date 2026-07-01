@@ -31,7 +31,7 @@ module Terminus
               .to_a
       end
 
-      def update_by_mac_address(value, **attributes)
+      def update_by_mac_address value, **attributes
         device = find_by mac_address: value
 
         return device if attributes.empty?

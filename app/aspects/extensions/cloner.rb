@@ -15,7 +15,7 @@ module Terminus
 
         include Dry::Monads[:result]
 
-        def call(id, **overrides)
+        def call id, **overrides
           Success create(id, build_attributes(id, overrides))
         rescue ROM::SQL::UniqueConstraintError => error
           build_failure error.message
