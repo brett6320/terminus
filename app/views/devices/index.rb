@@ -5,7 +5,7 @@ module Terminus
     module Devices
       # The index view.
       class Index < View
-        expose :devices, decorate: true
+        decorate :devices
         expose :query
       end
     end

@@ -5,7 +5,7 @@ module Terminus
     module Screens
       # The index view.
       class Index < Hanami::View
-        expose :screens, decorate: true
+        decorate :screens
         expose :query
       end
     end

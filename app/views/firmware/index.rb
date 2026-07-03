@@ -5,7 +5,7 @@ module Terminus
     module Firmware
       # The index view.
       class Index < View
-        expose :firmware, decorate: true
+        decorate :firmware
         expose :query
       end
     end

@@ -5,7 +5,7 @@ module Terminus
     module Models
       # The index view.
       class Index < Hanami::View
-        expose :models, decorate: true
+        decorate :models
         expose :query
       end
     end

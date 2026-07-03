@@ -5,7 +5,7 @@ module Terminus
     module Devices
       # The show view.
       class Show < View
-        expose :device, decorate: true
+        decorate :device
       end
     end
   end

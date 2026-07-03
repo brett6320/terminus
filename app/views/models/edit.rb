@@ -9,7 +9,7 @@ module Terminus
       class Edit < View
         include Deps["aspects.models.palette_optioner"]
 
-        expose :model, decorate: true
+        decorate :model
         expose(:palette_options) { |model:| palette_optioner.call model }
         expose :fields, default: Core::EMPTY_HASH
         expose :errors, default: Core::EMPTY_HASH

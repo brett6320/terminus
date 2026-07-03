@@ -17,7 +17,7 @@ module Terminus
         ]
 
         expose :api_uri
-        expose :ip_addresses, decorate: true
+        decorate :ip_addresses
         expose :firmware
         expose(:design_count) { design_relation.count }
         expose(:device_count) { device_relation.count }

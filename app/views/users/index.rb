@@ -5,7 +5,7 @@ module Terminus
     module Users
       # The index view.
       class Index < Hanami::View
-        expose :users, decorate: true
+        decorate :users
         expose :query
       end
     end

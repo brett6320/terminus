@@ -7,7 +7,7 @@ module Terminus
         # The show view.
         class Show < View
           expose :device
-          expose :log, as: Parts::DeviceLog, decorate: true
+          decorate :log, as: Parts::DeviceLog
         end
       end
     end

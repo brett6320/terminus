@@ -5,7 +5,7 @@ module Terminus
     module Models
       # The show view.
       class Show < View
-        expose :model, decorate: true
+        decorate :model
       end
     end
   end
