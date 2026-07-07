@@ -19,13 +19,13 @@ end
 
 # Subnets exempt from throttling (trusted, e.g. your local network).
 extra_allowed = parse_subnets.call ENV.fetch("RACK_ATTACK_ALLOWED_SUBNETS", "")
-allowed_subnets = DEFAULT_PRIVATE_SUBNETS + extra_allowed
+allowed_subnets = extra_allowed + DEFAULT_PRIVATE_SUBNETS
 
 # Subnets allowed to reach administrative paths (Sidekiq Web, user management).
 # Defaults to private/loopback so local networks keep working; set ADMIN_ALLOWED_SUBNETS
 # to your own trusted ranges when exposing the server publicly.
 extra_admin = parse_subnets.call ENV.fetch("ADMIN_ALLOWED_SUBNETS", "")
-admin_subnets = DEFAULT_PRIVATE_SUBNETS + extra_admin
+admin_subnets = extra_admin + DEFAULT_PRIVATE_SUBNETS
 
 Rack::Attack.cache.store = RedisClient.new url: ENV.fetch("KEYVALUE_URL")
 # :nocov:
