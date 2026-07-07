@@ -34,7 +34,8 @@ RSpec.describe "Screens", :db do
     expect(page).to have_text(model.label)
 
     click_link "Edit"
-    fill_in "screen[label]", with: nil
+    expect(page).to have_field("screen[label]")
+    fill_in "screen[label]", with: ""
     click_button "Save"
 
     expect(page).to have_text("must be filled")
