@@ -30,13 +30,18 @@ RSpec.describe "Rack::Attack", :db do
   end
 
   describe "throttling" do
+    # POST as JSON so Rodauth's json mode skips CSRF; rack-attack still counts each request.
+    def login_attempt env
+      post "/login", "{}", env.merge("CONTENT_TYPE" => "application/json")
+    end
+
     it "throttles repeated login attempts from an untrusted IP" do
-      (LOGIN_LIMIT + 1).times { post "/login", {}, public_ip }
+      (LOGIN_LIMIT + 1).times { login_attempt public_ip }
       expect(last_response.status).to eq(429)
     end
 
     it "does not throttle login from safelisted IPs" do
-      (LOGIN_LIMIT + 1).times { post "/login", {}, trusted_ip }
+      (LOGIN_LIMIT + 1).times { login_attempt trusted_ip }
       expect(last_response.status).not_to eq(429)
     end
   end

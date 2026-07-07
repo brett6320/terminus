@@ -360,6 +360,8 @@ GEM
       rbs (>= 4.0.0)
       tsort
     redcarpet (3.6.1)
+    redis (5.4.1)
+      redis-client (>= 0.22.0)
     redis-client (0.30.0)
       connection_pool
     reek (6.5.0)
@@ -626,6 +628,7 @@ DEPENDENCIES
   rack-attack (~> 6.7)
   rack-test (~> 2.2)
   rake (~> 13.4)
+  redis (~> 5.4)
   reek (~> 6.5)
   refinements (~> 14.0)
   repl_type_completor (~> 0.1)
@@ -781,6 +784,7 @@ CHECKSUMS
   rbs (4.0.3) sha256=5a7bf70e2628549d9a1f44eae447b2cfe55968a9c60cfff52693a4bdcc020e14
   rdoc (8.0.0) sha256=03bf8c08a9639658855a0cfd77c0abca8325c227693f7f33f82957811348c469
   redcarpet (3.6.1) sha256=d444910e6aa55480c6bcdc0cdb057626e8a32c054c29e793fa642ba2f155f445
+  redis (5.4.1) sha256=b5e675b57ad22b15c9bcc765d5ac26f60b675408af916d31527af9bd5a81faae
   redis-client (0.30.0) sha256=743f11ed42f0a41a0341554087b077479fec7e2d47a7c123fd90a12c0db5e477
   reek (6.5.0) sha256=d26d3a492773b2bbc228888067a21afe33ac07954a17dbd64cdeae42c4c69be1
   refinements (14.4.0) sha256=5b9e43b8712c06b0c652dbcd1e9ce7320f4d1b1643d131af4a92d1cb826d4a29
