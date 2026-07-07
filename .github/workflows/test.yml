@@ -36,6 +36,9 @@ jobs:
       HANAMI_ENV: test
       HANAMI_PORT: 2300
       API_URI: http://localhost:2300
+      # This fork has no git tags, so settings.git_tag would be empty and break specs that
+      # round-trip an extension export/import (its version defaults to the latest tag).
+      GIT_TAG: 1.0.0
       # Service containers are reachable by their service name from a container job.
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
       KEYVALUE_URL: redis://valkey:6379/1
