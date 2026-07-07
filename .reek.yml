@@ -12,6 +12,7 @@ detectors:
       - Terminus::Aspects::Playlists::SlideWindow#screens
   DataClump:
     exclude:
+      - Terminus::Action
       - Terminus::Actions::API::Base
       - Terminus::Aspects::Croner
       - Terminus::Aspects::Errors::Problem
@@ -23,6 +24,7 @@ detectors:
       - UniversalLoggerPatch#_log_structured
   FeatureEnvy:
     exclude:
+      - Terminus::Action#audit
       - Terminus::Action#authorize
       - Terminus::Actions::API::Base#detail_duplicate
       - Terminus::Actions::API::Base#detail_enum
@@ -104,6 +106,7 @@ detectors:
       - Terminus::Action#authorize
       - Terminus::Action#handle_rodauth_redirect
       - Terminus::Actions::Extensions::Poll::Show#fetch
+      - Terminus::Repositories::AuditEvent#append
       - Terminus::Aspects::Croner#call
       - Terminus::Aspects::Extensions::Fetchers::Client#parse
       - Terminus::Aspects::Extensions::Fetchers::Client#process
@@ -124,7 +127,9 @@ detectors:
     exclude:
       - Terminus::Action#admin_request?
       - Terminus::Action#admin_user?
+      - Terminus::Action#auditable?
       - Terminus::Action#enforce_two_factor_setup
+      - Terminus::Aspects::Audit::Verifier#valid?
       - Terminus::Aspects::Croner
       - Terminus::Aspects::Errors::Problem#duplicate
       - Terminus::Aspects::Errors::Problem#foreign_key
