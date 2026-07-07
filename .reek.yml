@@ -104,6 +104,7 @@ detectors:
       - Terminus::Action#authorize
       - Terminus::Action#handle_rodauth_redirect
       - Terminus::Actions::Extensions::Poll::Show#fetch
+      - Terminus::Repositories::AuditEvent#append
       - Terminus::Aspects::Croner#call
       - Terminus::Aspects::Extensions::Fetchers::Client#parse
       - Terminus::Aspects::Extensions::Fetchers::Client#process
