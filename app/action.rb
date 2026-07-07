@@ -14,6 +14,7 @@ module Terminus
     ADMIN_PATHS = %r(\A/(api/)?(users|firmware|models)(/|\z))
 
     before :authorize
+    after :audit
 
     protected
 
@@ -32,6 +33,24 @@ module Terminus
     end
 
     private
+
+    # Records authenticated, state-changing requests to the tamper-evident audit chain.
+    # Unauthenticated requests (e.g. device firmware endpoints) carry no actor and are skipped.
+    def audit request, response
+      return unless auditable? request, response
+
+      Hanami.app["repositories.audit_event"].append(
+        action: "#{request.env["REQUEST_METHOD"]} #{request.path}",
+        actor_id: response[:current_user_id],
+        metadata: {status: response.status}
+      )
+    end
+
+    def auditable? request, response
+      return false unless response[:current_user_id]
+
+      %w[POST PUT PATCH DELETE].include? request.env["REQUEST_METHOD"]
+    end
 
     # Restricts user/firmware/model management and all destructive (DELETE) actions to
     # administrators. Answers 403 Forbidden otherwise.

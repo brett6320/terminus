@@ -38,5 +38,9 @@ RSpec.describe Terminus::Repositories::AuditEvent, :db do
         "a" => {"c" => 3, "d" => 4}, "b" => 1
       )
     end
+
+    it "canonicalizes hashes nested within arrays" do
+      expect(described_class.canonical([{b: 1, a: 2}, "x"])).to eq([{"a" => 2, "b" => 1}, "x"])
+    end
   end
 end

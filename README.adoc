@@ -193,6 +193,10 @@ Also, once logged in, you can manage your settings as follows:
 * Visit `/me/remember` to enable, disable, or forget if you should be remembered.
 * Visit `/multifactor-manage` to enroll in multifactor authentication using a TOTP authenticator app or a passkey (WebAuthn), and to manage recovery codes. Set `MFA_REQUIRED=true` (see {doc_configuration_link}) to force all users to enroll before using the web UI.
 
+=== Auditing
+
+Every authenticated, state-changing request (create, update, delete) is recorded to a tamper-evident audit trail. Each event is hash-chained to the previous one (`digest = SHA256(actor, action, entity, metadata, previous digest)`), so any modification, deletion, or reordering of past events can be detected by re-walking the chain via `Terminus::Aspects::Audit::Verifier`. This provides tamper-_evidence_, not tamper-_prevention_: a party with direct database access could recompute the entire chain, so for stronger guarantees pair it with append-only database grants, off-host log shipping, or periodic external anchoring of the latest digest.
+
 === Devices
 
 See {devices_link} documentation for details.
