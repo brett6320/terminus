@@ -85,3 +85,30 @@ jobs:
 
       - name: RSpec
         run: bundle exec rspec
+
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: bkuhlmann/debian-ruby:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Gems Cache
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: gems-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: gems-
+
+      - name: Gems Install
+        run: |
+          bundle config set path vendor/bundle
+          bundle install
+
+      - name: RuboCop
+        run: bundle exec rubocop
+
+      - name: Reek
+        run: bundle exec reek app config lib slices
