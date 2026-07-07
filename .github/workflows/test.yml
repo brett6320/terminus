@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HANAMI_ENV: test
-      APP_SECRET: 89637534f5ef577003a625c4f415b374c0164c8ecaf8f6299c84e83f6e54523e
       HANAMI_PORT: 2300
       API_URI: http://localhost:2300
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
@@ -42,6 +41,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      # Generated at runtime so no secret-shaped value is committed to the repo.
+      - name: Generate App Secret
+        run: echo "APP_SECRET=$(openssl rand -hex 40)" >> "$GITHUB_ENV"
 
       - name: System Dependencies
         run: |
