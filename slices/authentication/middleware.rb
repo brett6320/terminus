@@ -191,10 +191,12 @@ module Authentication
         default_account = db[:account].insert_conflict(target: :name, update: {name: "default"})
                                       .insert name: "default", label: "Default"
 
+        # SSO users are authenticated by the configured identity provider, so they are trusted
+        # and verified on creation (the first user is also made an administrator).
         db[:user].where(id: account_id).update(
           name: omniauth_info["name"],
           role: first ? "admin" : "member",
-          status_id: first ? VERIFIED_ID : UNVERIFIED_ID
+          status_id: VERIFIED_ID
         )
         db[:membership].insert user_id: account_id, account_id: default_account
         audit.append action: "account.create", actor_id: account_id

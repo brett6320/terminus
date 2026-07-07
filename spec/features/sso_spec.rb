@@ -12,6 +12,10 @@ RSpec.describe "SSO", :db do
       uid: "sso-uid-1",
       info: {email: "sso@test.io", name: "SSO User"}
     )
+
+    # The shared "with login" context signs a user in; SSO starts from a signed-out state.
+    visit "/logout"
+    click_button "Logout"
   end
 
   after do
