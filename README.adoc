@@ -195,7 +195,7 @@ Also, once logged in, you can manage your settings as follows:
 
 === Auditing
 
-Every authenticated, state-changing request (create, update, delete) is recorded to a tamper-evident audit trail. Each event is hash-chained to the previous one (`digest = SHA256(actor, action, entity, metadata, previous digest)`), so any modification, deletion, or reordering of past events can be detected by re-walking the chain via `Terminus::Aspects::Audit::Verifier`. This provides tamper-_evidence_, not tamper-_prevention_: a party with direct database access could recompute the entire chain, so for stronger guarantees pair it with append-only database grants, off-host log shipping, or periodic external anchoring of the latest digest.
+Every successful, authenticated, state-changing request (create, update, delete) is recorded to a tamper-evident audit trail. Each event is hash-chained to the previous one (`digest = SHA256(actor, action, entity, metadata, previous digest)`), so any modification, deletion, or reordering of past events can be detected by re-walking the chain via `Terminus::Aspects::Audit::Verifier`. This provides tamper-_evidence_, not tamper-_prevention_: a party with direct database access could recompute the entire chain, so for stronger guarantees pair it with append-only database grants, off-host log shipping, or periodic external anchoring of the latest digest.
 
 === Devices
 

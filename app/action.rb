@@ -34,8 +34,9 @@ module Terminus
 
     private
 
-    # Records authenticated, state-changing requests to the tamper-evident audit chain.
-    # Unauthenticated requests (e.g. device firmware endpoints) carry no actor and are skipped.
+    # Records successful, authenticated, state-changing requests to the tamper-evident audit
+    # chain. Unauthenticated requests (e.g. device firmware endpoints) carry no actor and,
+    # along with failed requests, are skipped.
     def audit request, response
       return unless auditable? request, response
 
@@ -48,6 +49,7 @@ module Terminus
 
     def auditable? request, response
       return false unless response.exposures[:current_user_id]
+      return false unless response.status < 400
 
       %w[POST PUT PATCH DELETE].include? request.env["REQUEST_METHOD"]
     end
