@@ -85,11 +85,13 @@ module Authentication
 
       after_create_account do
         user_id = account[:id]
-        status_id = db[:user].one? ? VERIFIED_ID : UNVERIFIED_ID
+        first = db[:user].one?
+        status_id = first ? VERIFIED_ID : UNVERIFIED_ID
+        role = first ? "admin" : "member"
         account_id = db[:account].insert_conflict(target: :name, update: {name: "default"})
                                  .insert name: "default", label: "Default"
 
-        db[:user].where(id: user_id).update(name: param("name"), status_id:)
+        db[:user].where(id: user_id).update(name: param("name"), status_id:, role:)
         db[:membership].insert(user_id: user_id, account_id:)
 
         unless status_id == VERIFIED_ID

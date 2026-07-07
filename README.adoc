@@ -179,7 +179,12 @@ See {doc_configuration_link} documentation for details.
 
 === Users
 
-When launching this application for the first time, there will be no users. The first user to register will automatically be given _Verified_ status along with full access to the system. All subsequent users will marked as _Unverified_ and must be manually _Verified_ in order to have access to the system. In the future, more fine grained control will be provided for individual users, roles, and permissions.
+When launching this application for the first time, there will be no users. The first user to register will automatically be given _Verified_ status and the _Admin_ role along with full access to the system. All subsequent users will be marked as _Unverified_ (and must be manually _Verified_ to gain access) with the _Member_ role.
+
+Roles determine what a user may access:
+
+* *Admin*: Full access, including user management (`/users`), the Sidekiq Web UI (`/sidekiq`), firmware and model management, and all delete/destructive actions.
+* *Member*: Access to day-to-day content -- devices, playlists, screens, and extensions -- but not the admin-only areas above. Requests to admin-only paths are answered with a `403 Forbidden`.
 
 Also, once logged in, you can manage your settings as follows:
 

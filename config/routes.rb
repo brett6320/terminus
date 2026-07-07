@@ -4,6 +4,7 @@ require "sidekiq/web"
 
 require "sidekiq-scheduler/web"
 
+require_relative "../app/aspects/authorization/admin_constraint"
 require_relative "../app/aspects/designs/middleware"
 
 module Terminus
@@ -16,7 +17,7 @@ module Terminus
     use Rack::Deflater
     use Rack::Static, root: "public", urls: ["/.well-known/security.txt", "/fonts", "/uploads"]
 
-    mount Sidekiq::Web, at: "/sidekiq"
+    mount Aspects::Authorization::AdminConstraint.new(Sidekiq::Web), at: "/sidekiq"
 
     get "/", to: "dashboard.show", as: :root
 

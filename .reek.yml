@@ -122,6 +122,8 @@ detectors:
       - UniversalLoggerPatch#_log_structured
   UtilityFunction:
     exclude:
+      - Terminus::Action#admin_request?
+      - Terminus::Action#admin_user?
       - Terminus::Action#enforce_two_factor_setup
       - Terminus::Aspects::Croner
       - Terminus::Aspects::Errors::Problem#duplicate
