@@ -9,74 +9,79 @@ on:
 jobs:
   rspec:
     runs-on: ubuntu-latest
-    env:
-      HANAMI_ENV: test
-      HANAMI_PORT: 2300
-      API_URI: http://localhost:2300
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
-      KEYVALUE_URL: redis://localhost:6379/1
+    # Run inside the same image CircleCI uses so ImageMagick, Chromium, etc. match the
+    # environment the suite was written against (see #28).
+    container:
+      image: bkuhlmann/debian-ruby:latest
 
     services:
       postgres:
-        image: postgres:18
+        image: postgres:latest
         env:
           POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
       valkey:
-        image: valkey/valkey:9
-        ports:
-          - 6379:6379
+        image: valkey/valkey:latest
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
+    env:
+      HANAMI_ENV: test
+      HANAMI_PORT: 2300
+      API_URI: http://localhost:2300
+      # This fork has no git tags, so settings.git_tag would be empty and break specs that
+      # round-trip an extension export/import (its version defaults to the latest tag).
+      GIT_TAG: 1.0.0
+      # Service containers are reachable by their service name from a container job.
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      KEYVALUE_URL: redis://valkey:6379/1
+
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: System Dependencies
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y imagemagick nodejs npm
+          apt-get install --no-install-recommends -y \
+            chromium-common=147.0.7727.137-1~deb13u1 \
+            chromium=147.0.7727.137-1~deb13u1
+
       - name: Prepare
         run: |
-          # The log directory is gitignored, so create it for the app's file logger.
+          # The log directory is gitignored; the app's file logger needs it at boot.
           mkdir -p log
           # Generated at runtime so no secret-shaped value is committed to the repo.
           echo "APP_SECRET=$(openssl rand -hex 40)" >> "$GITHUB_ENV"
 
-      - name: System Dependencies
+      - name: Gems Cache
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: gems-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: gems-
+
+      - name: Gems Install
         run: |
-          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-            | sudo gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
-            | sudo tee /etc/apt/sources.list.d/pgdg.list
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y imagemagick libpq-dev libyaml-dev postgresql-client-18
-
-      - name: Ruby Setup
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Node Setup
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-          cache: npm
+          bundle config set path vendor/bundle
+          bundle install
 
       - name: Packages Install
-        run: npm ci
-
-      - name: Assets Compile
-        run: bundle exec hanami assets compile
+        run: npm install
 
       - name: Database Prepare
         run: bundle exec hanami db prepare
+
+      - name: Assets Compile
+        run: bundle exec hanami assets compile
 
       - name: RSpec
         run: bundle exec rspec
