@@ -30,17 +30,13 @@ module Terminus
     private
 
     # Forces multifactor enrollment for browser sessions when enabled. JWT (API) requests
-    # are exempt since they authenticate without a second factor.
+    # are exempt since they authenticate without a second factor. Rodauth's
+    # require_two_factor_setup redirects to the management page unless a factor is configured.
     def enforce_two_factor_setup rodauth
       return unless Hanami.app[:settings].mfa_required
       return if rodauth.use_jwt?
 
-      # :nocov:
-      return if rodauth.uses_two_factor_authentication?
-      # :nocov:
-
-      rodauth.set_notice_flash "Please set up multifactor authentication to continue."
-      rodauth.redirect rodauth.two_factor_manage_path
+      rodauth.require_two_factor_setup
     end
 
     def handle_rodauth_redirect rodauth, response
