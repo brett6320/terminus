@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+require "hanami_helper"
+
+RSpec.describe "Rack::Attack", :db do
+  let(:public_ip) { {"REMOTE_ADDR" => "203.0.113.5"} }
+  let(:trusted_ip) { {"REMOTE_ADDR" => "127.0.0.1"} }
+
+  before do
+    store = Rack::Attack.cache.store
+    keys = store.call "KEYS", "#{Rack::Attack.cache.prefix}*"
+    store.call "DEL", *keys unless keys.empty?
+  end
+
+  describe "admin IP blocklist" do
+    it "forbids Sidekiq Web from an untrusted IP" do
+      get "/sidekiq", {}, public_ip
+      expect(last_response.status).to eq(403)
+    end
+
+    it "forbids user management from an untrusted IP" do
+      get "/users", {}, public_ip
+      expect(last_response.status).to eq(403)
+    end
+
+    it "allows admin paths from a trusted (loopback) IP" do
+      get "/users", {}, trusted_ip
+      expect(last_response.status).not_to eq(403)
+    end
+  end
+
+  describe "throttling" do
+    it "throttles repeated login attempts from an untrusted IP" do
+      (LOGIN_LIMIT + 1).times { post "/login", {}, public_ip }
+      expect(last_response.status).to eq(429)
+    end
+
+    it "does not throttle login from safelisted IPs" do
+      (LOGIN_LIMIT + 1).times { post "/login", {}, trusted_ip }
+      expect(last_response.status).not_to eq(429)
+    end
+  end
+end
