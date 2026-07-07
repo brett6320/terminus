@@ -34,6 +34,7 @@ module Authentication
       enable :session_expiration if Hanami.app[:settings].session_expiration_enabled
 
       db Authentication::Slice["db.gateway"].connection
+      audit = Hanami.app["repositories.audit_event"]
 
       # Feature (automatic): base
       accounts_table :user
@@ -48,6 +49,8 @@ module Authentication
       unverified_account_message "Unverified user, please verify before logging in."
 
       after_login do
+        audit.append action: "login", actor_id: account_id
+
         unless account[:status_id] == VERIFIED_ID
           logout
           set_redirect_error_flash "Your account requires verification before proceeding. " \
@@ -70,11 +73,13 @@ module Authentication
       # Feature: change_login
       change_login_route "me/login"
       change_login_view { view "login_update", nil }
+      after_change_login { audit.append action: "login.change", actor_id: account_id }
 
       # Feature: change_password
       change_password_route "me/password"
       change_password_view { view "password_update", nil }
       change_password_button "Save"
+      after_change_password { audit.append action: "password.change", actor_id: account_id }
 
       # Feature: create_account
       create_account_button "Create"
@@ -85,6 +90,7 @@ module Authentication
 
       after_create_account do
         user_id = account[:id]
+        audit.append action: "account.create", actor_id: user_id
         first = db[:user].one?
         status_id = first ? VERIFIED_ID : UNVERIFIED_ID
         role = first ? "admin" : "member"
@@ -130,6 +136,7 @@ module Authentication
       # Feature: logout
       logout_notice_flash "You have been logged out."
       logout_redirect "/"
+      before_logout { audit.append action: "logout", actor_id: account_id }
 
       # Feature: remember
       remember_button "Save"

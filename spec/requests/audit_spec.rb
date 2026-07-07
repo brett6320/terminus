@@ -17,4 +17,10 @@ RSpec.describe "Audit trail", :db do
 
     expect(audit.all.map(&:action)).to include("POST /api/devices")
   end
+
+  it "records authentication events" do
+    access_token
+
+    expect(audit.all.map(&:action)).to include("login")
+  end
 end
