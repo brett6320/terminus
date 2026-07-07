@@ -41,13 +41,13 @@ module Terminus
 
       Hanami.app["repositories.audit_event"].append(
         action: "#{request.env["REQUEST_METHOD"]} #{request.path}",
-        actor_id: response[:current_user_id],
+        actor_id: response.exposures[:current_user_id],
         metadata: {status: response.status}
       )
     end
 
     def auditable? request, response
-      return false unless response[:current_user_id]
+      return false unless response.exposures[:current_user_id]
 
       %w[POST PUT PATCH DELETE].include? request.env["REQUEST_METHOD"]
     end
