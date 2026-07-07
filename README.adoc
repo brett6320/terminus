@@ -186,6 +186,7 @@ Also, once logged in, you can manage your settings as follows:
 * Visit `/me/login` to update your email address.
 * Visit `/me/password` to update your password.
 * Visit `/me/remember` to enable, disable, or forget if you should be remembered.
+* Visit `/multifactor-manage` to enroll in multifactor authentication using a TOTP authenticator app or a passkey (WebAuthn), and to manage recovery codes. Set `MFA_REQUIRED=true` (see {doc_configuration_link}) to force all users to enroll before using the web UI.
 
 === Devices
 

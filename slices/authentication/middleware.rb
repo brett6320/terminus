@@ -26,8 +26,10 @@ module Authentication
              :jwt_refresh,
              :login,
              :logout,
+             :otp,
+             :recovery_codes,
              :remember,
-             :recovery_codes
+             :webauthn
 
       enable :session_expiration if Hanami.app[:settings].session_expiration_enabled
 
@@ -134,6 +136,16 @@ module Authentication
 
       # Feature: recovery_codes
       recovery_codes_table :user_recovery_code
+
+      # Feature: otp
+      otp_keys_table :user_otp_key
+      otp_issuer "Terminus"
+
+      # Feature: webauthn
+      webauthn_keys_table :user_webauthn_key
+      webauthn_keys_account_id_column :user_id
+      webauthn_user_ids_table :user_webauthn_user_id
+      webauthn_rp_name "Terminus"
 
       # Feature: session_expiration
       if Hanami.app[:settings].session_expiration_enabled
