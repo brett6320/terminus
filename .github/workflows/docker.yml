@@ -13,7 +13,46 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Security scans must pass before any image is built or published.
+  secret-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Fails a pull request that introduces a known-vulnerable dependency. Only supported
+  # on pull_request events, so it is skipped (not failed) on merge/tag pushes.
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
   build-and-push:
+    needs: [secret-scan, dependency-review]
+    # Run once the scans have passed. dependency-review is skipped on non-PR events, so
+    # accept a skipped result there while still requiring the secret scan to succeed.
+    if: >-
+      ${{ !cancelled()
+      && needs.secret-scan.result == 'success'
+      && (needs.dependency-review.result == 'success' || needs.dependency-review.result == 'skipped') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
