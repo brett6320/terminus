@@ -10,6 +10,9 @@ module Terminus
   class Action < Hanami::Action
     include Dry::Monads[:result]
 
+    # Paths reserved for administrators. Any DELETE is also admin-only (see #require_admin).
+    ADMIN_PATHS = %r(\A/(api/)?(users|firmware|models)(/|\z))
+
     before :authorize
 
     protected
@@ -25,9 +28,29 @@ module Terminus
       end
 
       response[:current_user_id] = rodauth.account_id
+      require_admin request
     end
 
     private
+
+    # Restricts user/firmware/model management and all destructive (DELETE) actions to
+    # administrators. Answers 403 Forbidden otherwise.
+    def require_admin request
+      return unless admin_request? request
+      return if admin_user? request
+
+      halt 403
+    end
+
+    def admin_request? request
+      request.env["REQUEST_METHOD"] == "DELETE" ||
+        request.path.match?(ADMIN_PATHS)
+    end
+
+    def admin_user? request
+      id = request.env["rodauth"].account_id
+      Hanami.app["repositories.user"].find(id).role.to_s == "admin"
+    end
 
     # Forces multifactor enrollment for browser sessions when enabled. JWT (API) requests
     # are exempt since they authenticate without a second factor. Rodauth's
