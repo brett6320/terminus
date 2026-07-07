@@ -3,8 +3,8 @@
 require "hanami_helper"
 
 RSpec.describe "Rack::Attack", :db do
-  let(:public_ip) { {"REMOTE_ADDR" => "203.0.113.5"} }
-  let(:trusted_ip) { {"REMOTE_ADDR" => "127.0.0.1"} }
+  let(:public_ip) { {"REMOTE_ADDR" => "203.0.113.5", "HTTP_USER_AGENT" => "test-agent"} }
+  let(:trusted_ip) { {"REMOTE_ADDR" => "127.0.0.1", "HTTP_USER_AGENT" => "test-agent"} }
 
   before do
     store = Rack::Attack.cache.store
@@ -43,6 +43,23 @@ RSpec.describe "Rack::Attack", :db do
     it "does not throttle login from safelisted IPs" do
       (LOGIN_LIMIT + 1).times { login_attempt trusted_ip }
       expect(last_response.status).not_to eq(429)
+    end
+  end
+
+  describe "blank user agent blocklist" do
+    it "forbids a blank user agent from an untrusted IP" do
+      get "/", {}, "REMOTE_ADDR" => "203.0.113.5"
+      expect(last_response.status).to eq(403)
+    end
+
+    it "exempts the health check" do
+      get "/up", {}, "REMOTE_ADDR" => "203.0.113.5"
+      expect(last_response.status).not_to eq(403)
+    end
+
+    it "allows a present user agent" do
+      get "/", {}, public_ip
+      expect(last_response.status).not_to eq(403)
     end
   end
 end

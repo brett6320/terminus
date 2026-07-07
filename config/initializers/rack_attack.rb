@@ -46,6 +46,12 @@ Rack::Attack.blocklist "admin ip" do |request|
   request.path.match?(ADMIN_PATHS) && admin_subnets.none? { |subnet| subnet.include? request.ip }
 end
 
+# Block obvious bot/scanner traffic that omits a User-Agent header. The health check is
+# exempt (and trusted subnets are already safelisted above). Bot hygiene, not authentication.
+Rack::Attack.blocklist "block blank user agents" do |request|
+  request.path != "/up" && request.user_agent.to_s.strip.empty?
+end
+
 # Throttle login attempts to blunt credential stuffing.
 Rack::Attack.throttle "login/ip", limit: LOGIN_LIMIT, period: 60 do |request|
   request.ip if request.post? && request.path == "/login"
