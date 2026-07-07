@@ -36,6 +36,9 @@
 # GitHub
 /.github
 
+# Local toolchain
+/.local
+
 # Log
 /log/
 
