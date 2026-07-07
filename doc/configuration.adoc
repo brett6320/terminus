@@ -29,15 +29,14 @@ There are several environment variables you can use to customize behavior by upd
 * `DATABASE_NAME`: Defines your database name. Used by {doc_docker_link} only. Default: `terminus`.
 * `DATABASE_PASSWORD`: Defines your database password. Used by {doc_docker_link} only. Default: (auto-generated for you during setup).
 * `DATABASE_PORT`: Defines your database port. Used by {doc_docker_link} only. Default: `5432`.
-* `DATABASE_URL`: Defines the full URL based on the `+DATABASE_*+` settings. This is automatically configured for you during setup. See your `+.env*+` files for details.
-* `DATABASE_URL`: Necessary to connect to your {postgres_link} database. Can be customized by changing the value in the `.env.development` or `.env.test` file created when you ran `bin/setup`.
+* `DATABASE_URL`: Necessary to connect to your {postgres_link} database. Defines the full URL based on the `+DATABASE_*+` settings and is automatically configured for you during setup. Can be customized by changing the value in the `.env.development` or `.env.test` file created when you ran `bin/setup`. See your `+.env*+` files for details.
 * `DATABASE_USER`: Defines your database user. Used by {doc_docker_link} only. Default: `terminus`.
 * `FERRUM_DEFAULT_TIMEOUT`: Used for configuring {ferrum_link} headless browser default time allowed for the browser to respond to a request. Default: `30`.
 * `FERRUM_PROCESS_TIMEOUT`: Used for configuring {ferrum_link} headless browser time allowed for the browser to start. Default: `15`.
 * `FERRUM_JAVASCRIPT_ERRORS`: Used for configuring {ferrum_link} headless browser JavaScript errors. Default: `true`.
 * `FIRMWARE_SYNCHRONIZER`: Enables/disables firmware synchronization. See {doc_jobs_link} for details. Defaults to enabled.
-* `FONT_SYNCHRONIZER`: Enables/disables firmware synchronization. See {doc_jobs_link} for details. Defaults to enabled.
-* `FONTS_PATH`: The path to where {trmnl_framework_link} fonts are stored since the Framework stylesheets require a relative path to all fonts to load properly. This is necessary when rendering screens for {doc_extensions_link}. Default: `public/fonts`.
+* `FONT_SYNCHRONIZER`: Enables/disables font synchronization. See {doc_jobs_link} for details. Defaults to enabled.
+* `FONTS_ROOT`: The path to where {trmnl_framework_link} fonts are stored since the Framework stylesheets require a relative path to all fonts to load properly. This is necessary when rendering screens for {doc_extensions_link}. Default: `public/fonts`.
 * `HANAMI_MAX_THREADS`: The maximum number of threads allowed for {puma_link}. Default: `5`.
 * `HANAMI_MIN_THREADS`: The minimum number of threads allowed for {puma_link}. Default: `HANAMI_MAX_THREADS`.
 * `HANAMI_WEB_CONCURRENCY`: The number of {puma_link} workers. Default: `0`.
@@ -52,7 +51,6 @@ There are several environment variables you can use to customize behavior by upd
 * `MODEL_SYNCHRONIZER`: Enables/disables model synchronization. See {doc_jobs_link} for details. Defaults to enabled.
 * `RACK_ATTACK_ALLOWED_SUBNETS`: Defines the {rack_attack_link} subnets that are allowed to connect to this server which helps when adding DNS, a reverse proxy, or a VPN, etc. between your device and this application so you can use this environment variable to add more subnets as desired. This takes a single subnet/IP or an array -- with no spaces -- of subnets/IPs as values. Example: "111.111.111.111,150.120.0.0/16". Alternatively, you can disable Rack Attack altogether by removing the `config.middleware.use Rack::Attack` line from `config/app.rb` or customize Rack Attack via the `config/initializers/rack_attack.rb` file. Any of these approaches will allow you to get your service layer properly configured so your device can talk to this server. By default, the following subnets are allowed: `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `127.0.0.1`, and `::1`.
 * `SENSORS_PATH`: The path to where sensor information is written. See {doc_raspberry_pi_link} for details. Default: `public/sensors.json`.
-* `SCREEN_SYNCHRONIZER`: Enables/disables device proxied screen synchronization. See {doc_jobs_link} for details. Defaults to enabled.
 * `SESSION_EXPIRATION_ENABLED`: Determines if your browser session or JWT API token is expired or not. A warning is logged when disabled because this bypasses all checks but can be useful on local networks that only you have access to. Default: `true`.
 * `SESSION_INACTIVITY_LIMIT`: The amount of time, in seconds, since last browser session activity before needing to login again. This is checked _before_ `SESSION_LIFETIME_LIMIT`. Default: 1,800 seconds (30 minutes).
 * `SESSION_LIFETIME_LIMIT`: The maximum time, in seconds, the browser session remains active -- including session activity -- before needing to login again. This is checked _after_ `SESSION_INACTIVITY_LIMIT`. Default: 86,400 seconds (1 day).
