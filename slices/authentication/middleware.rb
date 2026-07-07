@@ -136,7 +136,7 @@ module Authentication
       # Feature: logout
       logout_notice_flash "You have been logged out."
       logout_redirect "/"
-      before_logout { audit.append action: "logout", actor_id: account_id }
+      before_logout { audit.append action: "logout", actor_id: session_value }
 
       # Feature: remember
       remember_button "Save"
