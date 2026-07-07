@@ -2,7 +2,7 @@
 
 require "ipaddr"
 require "rack/attack"
-require "redis-client"
+require "redis"
 
 # :nocov:
 DEFAULT_PRIVATE_SUBNETS = [
@@ -27,7 +27,7 @@ allowed_subnets = extra_allowed + DEFAULT_PRIVATE_SUBNETS
 extra_admin = parse_subnets.call ENV.fetch("ADMIN_ALLOWED_SUBNETS", "")
 admin_subnets = extra_admin + DEFAULT_PRIVATE_SUBNETS
 
-Rack::Attack.cache.store = RedisClient.new url: ENV.fetch("KEYVALUE_URL")
+Rack::Attack.cache.store = Redis.new url: ENV.fetch("KEYVALUE_URL")
 # :nocov:
 
 ADMIN_PATHS = %r(\A/(sidekiq|users)(/|\z))
