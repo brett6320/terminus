@@ -13,6 +13,6 @@ image:https://render.com/images/deploy-to-render-button.svg[Deploy to Render,lin
 Once deployed, _please take note of the following_:
 
 * All services are set up to use the _free_ plan. Unfortunately, Render doesn't support the _free_ plan for workers so uses the _starter_ plan instead. If you choose to not pay for this service by manually removing it, you won't be able to use data synchronization, extensions, and image processing.
-* Once deployed, please ensure you update the `API_URI` environment variable to the full URL. Example: `https://terminus-web-1mk6.onrender.com`. This is because the `render.yml` doesn't supply the full `host` URL at runtime so you'll have to manually update the URL via the `terminus-web` environment variables and restart your web service before connecting any devices.
+* Once deployed, please verify the `API_URI` environment variable is the full URL. Example: `https://terminus-web-1mk6.onrender.com`. The `render.yaml` populates `API_URI` automatically from the `terminus-web` service `host` property, but this value is the bare host without the `https://` scheme, so you may need to update it to the full URL via the `terminus-web` environment variables and restart your web service before connecting any devices.
 
 
