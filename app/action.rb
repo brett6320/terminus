@@ -49,7 +49,7 @@ module Terminus
 
     def auditable? request, response
       return false unless response.exposures[:current_user_id]
-      return false unless response.status < 400
+      return false if response.status >= 400
 
       %w[POST PUT PATCH DELETE].include? request.env["REQUEST_METHOD"]
     end
