@@ -57,6 +57,13 @@ jobs:
           paths:
             - vendor/bundle
 
+      - run:
+          name: Security Audit
+          command: |
+            gem install bundler-audit ruby_audit
+            bundle-audit check --update
+            ruby-audit check
+
       - restore_cache:
           name: Packages Restore
           keys:

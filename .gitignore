@@ -3,6 +3,7 @@
 *.log
 .bundle
 .DS_Store
+/.local
 compose.dev.yml
 coverage
 db/*.sqlite
