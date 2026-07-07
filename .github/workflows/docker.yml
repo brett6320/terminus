@@ -54,7 +54,7 @@ jobs:
       # On pull requests this is a build-only test (no push, native amd64, cached for
       # speed). On merge/tag it builds every platform fresh and publishes to the registry.
       - name: Build and Publish
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
