@@ -10,4 +10,11 @@
   <%== rodauth.button rodauth.login_button %>
 </form>
 
+<% rodauth.omniauth_providers.each do |provider| %>
+  <form method="post" action="/auth/<%= provider %>" class="rodauth">
+    <%== rodauth.csrf_tag "/auth/#{provider}" %>
+    <button type="submit">Sign in with <%= {openid_connect: "OpenID Connect", saml: "SAML"}.fetch(provider, provider) %></button>
+  </form>
+<% end %>
+
 <%= link_to "Register", "/register" %>
