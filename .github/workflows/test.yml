@@ -1,0 +1,72 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    env:
+      HANAMI_ENV: test
+      APP_SECRET: 89637534f5ef577003a625c4f415b374c0164c8ecaf8f6299c84e83f6e54523e
+      HANAMI_PORT: 2300
+      API_URI: http://localhost:2300
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      KEYVALUE_URL: redis://localhost:6379/1
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      valkey:
+        image: valkey/valkey:9
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y imagemagick libpq-dev libyaml-dev
+
+      - name: Ruby Setup
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Node Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Packages Install
+        run: npm ci
+
+      - name: Assets Compile
+        run: bundle exec hanami assets compile
+
+      - name: Database Prepare
+        run: bundle exec hanami db prepare
+
+      - name: RSpec
+        run: bundle exec rspec
