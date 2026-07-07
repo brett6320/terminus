@@ -14,6 +14,9 @@ Metrics/BlockLength:
     - config/db/migrate/*
     - slices/authentication/feature.rb
     - slices/authentication/middleware.rb
+Metrics/ClassLength:
+  Exclude:
+    - slices/authentication/middleware.rb
 Metrics/CollectionLiteralLength:
   Exclude:
     - app/serializers/device.rb

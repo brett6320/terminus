@@ -101,6 +101,7 @@ detectors:
       - Terminus::Aspects::Screens::Placeholder
   TooManyStatements:
     exclude:
+      - Terminus::Action#authorize
       - Terminus::Action#handle_rodauth_redirect
       - Terminus::Actions::Extensions::Poll::Show#fetch
       - Terminus::Aspects::Croner#call
@@ -121,6 +122,7 @@ detectors:
       - UniversalLoggerPatch#_log_structured
   UtilityFunction:
     exclude:
+      - Terminus::Action#enforce_two_factor_setup
       - Terminus::Aspects::Croner
       - Terminus::Aspects::Errors::Problem#duplicate
       - Terminus::Aspects::Errors::Problem#foreign_key
