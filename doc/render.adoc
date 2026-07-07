@@ -15,4 +15,13 @@ Once deployed, _please take note of the following_:
 * All services are set up to use the _free_ plan. Unfortunately, Render doesn't support the _free_ plan for workers so uses the _starter_ plan instead. If you choose to not pay for this service by manually removing it, you won't be able to use data synchronization, extensions, and image processing.
 * Once deployed, please verify the `API_URI` environment variable is the full URL. Example: `https://terminus-web-1mk6.onrender.com`. The `render.yaml` populates `API_URI` automatically from the `terminus-web` service `host` property, but this value is the bare host without the `https://` scheme, so you may need to update it to the full URL via the `terminus-web` environment variables and restart your web service before connecting any devices.
 
+== Production Hardening
+
+The default `render.yaml` is optimized for a quick, low-cost trial. Before relying on this deployment in production, review the following:
+
+* *Set a stable `APP_SECRET`*: The blueprint does not define `APP_SECRET`, so the application falls back to a value that is _regenerated every time the service boots_. This invalidates all browser sessions and JWT access/refresh tokens on every deploy or restart (and differs between scaled instances). Add an `APP_SECRET` environment variable (at least 64 characters) to the `terminus-web` service in the Render dashboard so it stays constant. See link:configuration.adoc[Configuration] for details.
+* *Upgrade off the free web plan*: The `terminus-web` service uses the _free_ plan, which spins down after inactivity and cold-starts on the next request. Because devices poll on a schedule and expect an always-available server, use at least the _starter_ plan for the web service in production.
+* *Keep the datastores private*: The managed database and key/value store set `ipAllowList: []`, which blocks all external connections and only allows access from within your Render private network. Keep this closed unless you have a specific reason to expose them.
+* *Keep session expiration enabled*: `SESSION_EXPIRATION_ENABLED` defaults to `true`. Do not disable it on a public server -- doing so bypasses all session and JWT expiration checks.
+* *Use a custom domain with TLS*: Render provisions TLS automatically for both `*.onrender.com` and custom domains. Configure a custom domain (and update `API_URI` accordingly) for a stable device host.
 
