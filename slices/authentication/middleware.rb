@@ -26,6 +26,7 @@ module Authentication
              :jwt_refresh,
              :login,
              :logout,
+             :omniauth,
              :otp,
              :recovery_codes,
              :remember,
@@ -35,6 +36,7 @@ module Authentication
 
       db Authentication::Slice["db.gateway"].connection
       audit = Hanami.app["repositories.audit_event"]
+      settings = Hanami.app[:settings]
 
       # Feature (automatic): base
       accounts_table :user
@@ -155,6 +157,48 @@ module Authentication
       webauthn_keys_account_id_column :user_id
       webauthn_user_ids_table :user_webauthn_user_id
       webauthn_rp_name "Terminus"
+
+      # Feature: omniauth (single sign-on). Local password login always remains available;
+      # providers are only registered when configured, so SSO is off by default.
+      omniauth_identities_table :user_identity
+      omniauth_identities_account_id_column :user_id
+
+      unless settings.oidc_issuer.empty?
+        require "omniauth_openid_connect"
+
+        omniauth_provider :openid_connect,
+                          name: :openid_connect,
+                          issuer: settings.oidc_issuer,
+                          discovery: true,
+                          scope: %i[openid email profile],
+                          client_options: {
+                            identifier: settings.oidc_client_id,
+                            secret: settings.oidc_client_secret,
+                            redirect_uri: "#{settings.api_uri}/auth/openid_connect/callback"
+                          }
+      end
+
+      unless settings.saml_idp_metadata_url.empty?
+        require "omniauth/saml"
+
+        omniauth_provider :saml,
+                          idp_metadata_url: settings.saml_idp_metadata_url,
+                          sp_entity_id: settings.api_uri
+      end
+
+      after_omniauth_create_account do
+        first = db[:user].one?
+        default_account = db[:account].insert_conflict(target: :name, update: {name: "default"})
+                                      .insert name: "default", label: "Default"
+
+        db[:user].where(id: account_id).update(
+          name: omniauth_info["name"],
+          role: first ? "admin" : "member",
+          status_id: first ? VERIFIED_ID : UNVERIFIED_ID
+        )
+        db[:membership].insert user_id: account_id, account_id: default_account
+        audit.append action: "account.create", actor_id: account_id
+      end
 
       # Feature: session_expiration
       if Hanami.app[:settings].session_expiration_enabled
