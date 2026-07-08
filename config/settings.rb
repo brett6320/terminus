@@ -32,6 +32,10 @@ module Terminus
     setting :keyvalue_url, constructor: Types::Params::String.constrained(filled: true)
     setting :mfa_required, constructor: Types::Params::Bool, default: false
     setting :model_synchronizer, constructor: Types::Params::Bool, default: true
+    setting :oidc_client_id, constructor: Types::Params::String, default: ""
+    setting :oidc_client_secret, constructor: Types::Params::String, default: ""
+    setting :oidc_issuer, constructor: Types::Params::String, default: ""
+    setting :saml_idp_metadata_url, constructor: Types::Params::String, default: ""
     setting :sensors_path,
             constructor: Terminus::Types::Pathname,
             default: Hanami.app.root.join("public/sensors.json")
