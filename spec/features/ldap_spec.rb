@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami_helper"
+require "net/ldap"
 
 RSpec.describe "LDAP authentication", :db do
   before do
