@@ -198,6 +198,9 @@ module Authentication
           role: first ? "admin" : "member",
           status_id: VERIFIED_ID
         )
+        # Reflect the verified status on the in-memory account so the subsequent auto-login
+        # (which happens in the same request) does not treat the new user as unverified.
+        account[:status_id] = VERIFIED_ID
         db[:membership].insert user_id: account_id, account_id: default_account
         audit.append action: "account.create", actor_id: account_id
       end
