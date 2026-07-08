@@ -19,7 +19,6 @@ RSpec.describe "LDAP authentication", :db do
   def sign_in email, password
     visit "/login"
     fill_in "login", with: email
-    click_button "Login"
     fill_in "Password", with: password
     click_button "Login"
   end
