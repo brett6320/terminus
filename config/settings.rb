@@ -30,6 +30,9 @@ module Terminus
     setting :http_timeout_read, constructor: Types::Params::Integer.constrained(gt: 0), default: 10
     setting :http_timeout_write, constructor: Types::Params::Integer.constrained(gt: 0), default: 10
     setting :keyvalue_url, constructor: Types::Params::String.constrained(filled: true)
+    setting :ldap_bind_pattern, constructor: Types::Params::String, default: ""
+    setting :ldap_host, constructor: Types::Params::String, default: ""
+    setting :ldap_port, constructor: Types::Params::Integer, default: 389
     setting :mfa_required, constructor: Types::Params::Bool, default: false
     setting :model_synchronizer, constructor: Types::Params::Bool, default: true
     setting :oidc_client_id, constructor: Types::Params::String, default: ""
