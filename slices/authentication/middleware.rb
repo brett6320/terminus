@@ -64,6 +64,25 @@ module Authentication
       # Feature (automatic): login_password_requirements_base
       require_password_confirmation? false
 
+      # Hybrid LDAP authentication. Accounts with a local password hash always authenticate
+      # locally; accounts without one bind against the configured directory (when LDAP is set).
+      password_match? do |password|
+        next super(password) if get_password_hash
+        next false if settings.ldap_host.empty?
+
+        require "net/ldap"
+
+        Net::LDAP.new(
+          host: settings.ldap_host,
+          port: settings.ldap_port,
+          auth: {
+            method: :simple,
+            username: format(settings.ldap_bind_pattern, account[login_column]),
+            password:
+          }
+        ).bind
+      end
+
       # Feature: active_sessions
       active_sessions_account_id_column :user_id
       active_sessions_table :user_active_session_key
